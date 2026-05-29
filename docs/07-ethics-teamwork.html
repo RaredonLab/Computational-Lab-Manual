@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>07: Ethics &amp; Teamwork | Raredon Lab Manual</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sidebar-w: 256px; --header-h: 54px;
+      --bg: #FFFFFF; --sidebar-bg: #F6F5F1; --border: #E3E1DC;
+      --text-p: #1A1917; --text-s: #5C5A56; --text-t: #9C9A96;
+      --accent: #1D4ED8; --accent-lt: #EFF6FF; --accent-bd: #BFDBFE;
+      --code-bg: #F6F5F1; --code-bd: #D8D6D0;
+      --note-bg: #F0FDF4; --note-bd: #16A34A;
+      --warn-bg: #FFFBEB; --warn-bd: #D97706;
+      --rule-bg: #FFF1F2; --rule-bd: #E11D48;
+      --font: 'IBM Plex Sans', sans-serif;
+      --font-serif: 'IBM Plex Serif', serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+    html { scroll-behavior: smooth; font-size: 15px; }
+    body { font-family: var(--font); line-height: 1.75; color: var(--text-p); background: var(--bg); }
+
+    .site-header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); background: #141210; display: flex; align-items: center; padding: 0 24px; gap: 10px; z-index: 200; }
+    .hdr-lab { font-family: var(--font-serif); font-size: 15px; font-weight: 600; color: #fff; }
+    .hdr-sep { color: rgba(255,255,255,0.25); font-size: 20px; }
+    .hdr-manual { font-size: 13px; color: rgba(255,255,255,0.55); }
+    .hdr-spacer { flex: 1; }
+    .hdr-badge { font-family: var(--font-mono); font-size: 11px; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); padding: 3px 9px; border-radius: 4px; }
+
+    .layout { display: flex; padding-top: var(--header-h); min-height: 100vh; }
+
+    .sidebar { position: fixed; top: var(--header-h); left: 0; width: var(--sidebar-w); height: calc(100vh - var(--header-h)); background: var(--sidebar-bg); border-right: 1px solid var(--border); overflow-y: auto; padding: 28px 0 48px; }
+    .sb-section { padding: 0 14px; margin-bottom: 28px; }
+    .sb-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-t); padding: 0 8px; margin-bottom: 6px; }
+    .nav-link { display: flex; align-items: baseline; gap: 6px; padding: 5px 8px; border-radius: 5px; font-size: 13px; color: var(--text-s); text-decoration: none; transition: background 0.12s, color 0.12s; line-height: 1.4; }
+    .nav-link:hover { background: rgba(0,0,0,0.05); color: var(--text-p); }
+    .nav-link.active { background: var(--accent-lt); color: var(--accent); font-weight: 500; }
+    .nav-link .n { font-family: var(--font-mono); font-size: 11px; color: var(--text-t); flex-shrink: 0; min-width: 22px; }
+    .nav-link.active .n { color: var(--accent); opacity: 0.7; }
+    .sb-div { border: none; border-top: 1px solid var(--border); margin: 10px 14px 16px; }
+    .toc-link { display: block; padding: 3px 8px; border-radius: 4px; font-size: 12.5px; color: var(--text-s); text-decoration: none; transition: color 0.12s; line-height: 1.5; }
+    .toc-link:hover { color: var(--accent); }
+    .toc-link.here { color: var(--accent); font-weight: 500; }
+
+    .content { margin-left: var(--sidebar-w); width: calc(100% - var(--sidebar-w)); max-width: calc(var(--sidebar-w) + 800px); padding: 52px 60px 100px; }
+
+    .eyebrow { font-family: var(--font-mono); font-size: 12px; color: var(--accent); font-weight: 500; letter-spacing: 0.05em; margin-bottom: 10px; }
+    .doc-title { font-family: var(--font-serif); font-size: 36px; font-weight: 600; line-height: 1.18; color: var(--text-p); margin-bottom: 14px; }
+    .doc-sub { font-size: 17px; color: var(--text-s); line-height: 1.65; max-width: 580px; padding-bottom: 36px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+
+    .sec { margin-bottom: 56px; scroll-margin-top: calc(var(--header-h) + 20px); }
+    h2 { font-family: var(--font-serif); font-size: 23px; font-weight: 600; color: var(--text-p); display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .sn { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--text-t); background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; flex-shrink: 0; }
+    h3 { font-size: 15px; font-weight: 600; color: var(--text-p); margin: 28px 0 10px; }
+    p { margin-bottom: 14px; }
+    p:last-child { margin-bottom: 0; }
+    a { color: var(--accent); }
+    ul, ol { margin: 12px 0 14px 20px; }
+    li { margin-bottom: 7px; line-height: 1.65; }
+
+    .call { border-radius: 6px; padding: 14px 18px; border-left: 3px solid; margin: 22px 0; }
+    .call-title { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 6px; }
+    .call p { font-size: 14px; line-height: 1.65; margin: 0; }
+    .call p + p { margin-top: 8px; }
+    .call.note { background: var(--note-bg); border-color: var(--note-bd); }
+    .call.note .call-title { color: #15803D; }
+    .call.warn { background: var(--warn-bg); border-color: var(--warn-bd); }
+    .call.warn .call-title { color: #B45309; }
+    .call.rule { background: var(--rule-bg); border-color: var(--rule-bd); }
+    .call.rule .call-title { color: #BE123C; }
+    .call.info { background: var(--accent-lt); border-color: var(--accent-bd); }
+    .call.info .call-title { color: var(--accent); }
+
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+    th { background: var(--sidebar-bg); font-weight: 600; text-align: left; padding: 9px 14px; border: 1px solid var(--border); font-size: 12px; }
+    td { padding: 9px 14px; border: 1px solid var(--border); vertical-align: top; line-height: 1.6; }
+    tr:nth-child(even) td { background: #FAFAF8; }
+
+    .rule-of-three {
+      display: grid; grid-template-columns: 40px 1fr;
+      gap: 0; margin: 24px 0;
+      border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+    }
+    .rot-num {
+      background: var(--sidebar-bg); border-right: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono); font-size: 18px; font-weight: 600;
+      color: var(--text-t); padding: 20px 0;
+    }
+    .rot-body { padding: 16px 20px; }
+    .rot-body:not(:last-child) { border-bottom: 1px solid var(--border); }
+    .rot-num:not(:last-child) { border-bottom: 1px solid var(--border); }
+    .rot-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+    .rot-desc { font-size: 13.5px; color: var(--text-s); line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="hdr-lab">Raredon Lab</span>
+  <span class="hdr-sep">·</span>
+  <span class="hdr-manual">Computational Lab Manual</span>
+  <div class="hdr-spacer"></div>
+  <span class="hdr-badge">Document 07 of 08</span>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Manual navigation">
+    <div class="sb-section">
+      <div class="sb-label">Documents</div>
+      <a href="index.html" class="nav-link"><span class="n">00</span> Overview &amp; index</a>
+      <a href="01-onboarding.html" class="nav-link"><span class="n">01</span> Onboarding</a>
+      <a href="02-computing-environment.html" class="nav-link"><span class="n">02</span> Computing environment</a>
+      <a href="03-git-workflow.html" class="nav-link"><span class="n">03</span> Git &amp; GitHub workflow</a>
+      <a href="04-coding-standards.html" class="nav-link"><span class="n">04</span> Coding standards</a>
+      <a href="05-data-management.html" class="nav-link"><span class="n">05</span> Data management</a>
+      <a href="06-ai-tools.html" class="nav-link"><span class="n">06</span> AI tools &amp; Claude</a>
+      <a href="07-ethics-teamwork.html" class="nav-link active" aria-current="page"><span class="n">07</span> Ethics &amp; teamwork</a>
+      <a href="08-publication.html" class="nav-link"><span class="n">08</span> Publication &amp; archiving</a>
+    </div>
+    <hr class="sb-div">
+    <div class="sb-section">
+      <div class="sb-label">Appendices</div>
+      <a href="appendix-a-exit-protocol.html" class="nav-link"><span class="n">A</span> Lab exit protocol</a>
+    </div>
+    <hr class="sb-div">
+    <div class="sb-section">
+      <div class="sb-label">On this page</div>
+      <a href="#authorship" class="toc-link">Authorship</a>
+      <a href="#credit" class="toc-link">Credit and acknowledgment</a>
+      <a href="#integrity" class="toc-link">Data integrity and figures</a>
+      <a href="#errors" class="toc-link">Handling errors</a>
+      <a href="#culture" class="toc-link">Lab culture</a>
+      <a href="#disagreement" class="toc-link">Disagreement</a>
+      <a href="#communication" class="toc-link">Communication and reliability</a>
+      <a href="#difficult" class="toc-link">When something is wrong</a>
+      <a href="#pi-role" class="toc-link">The PI's role</a>
+    </div>
+  </nav>
+
+  <main class="content">
+    <div class="eyebrow">Document 07</div>
+    <h1 class="doc-title">Ethics &amp; Teamwork</h1>
+    <p class="doc-sub">Authorship, integrity, credit, culture, and how to work well together.</p>
+
+
+    <!-- §1 AUTHORSHIP -->
+    <div class="sec" id="authorship">
+      <h2><span class="sn">§1</span> Authorship</h2>
+
+      <h3>Who earns authorship</h3>
+      <p>The lab follows the CRediT (Contributor Roles Taxonomy) framework for determining authorship. CRediT defines fourteen distinct contribution types (from conceptualization and methodology to data curation, writing, and funding acquisition) and provides a principled basis for deciding who has contributed sufficiently to be named an author. When in doubt, consult the CRediT taxonomy and discuss with the PI.</p>
+      <p>Additional guidance on authorship principles and the specific responsibilities of first authors will be provided in the General Lab Manual, currently in development. This document and the General Lab Manual will cross-link once both are complete.</p>
+
+      <h3>Setting expectations early</h3>
+      <p>Authorship conversations begin at the start of a project. Preliminary role assignments help with project planning and ensure that everyone understands what is expected of them from the outset. These assignments may shift over time as the project evolves and people's actual contributions become clear. As a paper comes together, the authorship team and the PI will revisit what feels accurate and appropriate.</p>
+      <p>First authorship carries significant responsibility. Whoever holds that role must be able to carry out its demands effectively and on a reasonable timeline. This is a practical as much as an ethical consideration.</p>
+
+      <h3>Gift authorship</h3>
+      <p>Adding someone to a paper who has not contributed meaningfully is gift authorship, and it should not happen. If a person has contributed intellectually, financially, or materially to the work, authorship should be offered to them. Authors may always request moving themselves to the acknowledgments section or being removed from the paper entirely; this request should be honored.</p>
+
+      <h3>Authorship disputes</h3>
+      <p>If you have concerns about authorship, whether your own or someone else's, bring them to the PI privately, before any direct conflict develops. Do not let discomfort fester. The sooner a concern is raised, the more options exist for resolving it fairly.</p>
+    </div>
+
+
+    <!-- §2 CREDIT AND ACKNOWLEDGMENT -->
+    <div class="sec" id="credit">
+      <h2><span class="sn">§2</span> Credit and acknowledgment</h2>
+
+      <h3>The 1+n rule</h3>
+      <p>Ideas, methods, and intellectual contributions generally do rise to authorship level in this lab; the CRediT taxonomy covers more than most people expect. For contributions that fall just short of that threshold, a practical guideline is the 1+n rule:</p>
+      <ul>
+        <li>If a single meaningful conversation with a person substantially and materially influenced the work, that person belongs in the acknowledgments.</li>
+        <li>If there was a follow-up conversation (the +n part), that person should be offered authorship. They may decline, and that is their choice. But the offer should be made.</li>
+      </ul>
+      <p>People's time and thinking are real contributions. Err toward generosity.</p>
+
+      <h3>Funding, resources, and collaborators</h3>
+      <p>All relevant funding sources, institutional resources, and collaborators must be acknowledged in every publication. Before submitting any manuscript, review the acknowledgments section with the PI to make sure nothing has been missed. This is a first author responsibility. Additional guidance is in the General Lab Manual under Responsibilities of First Authors.</p>
+    </div>
+
+
+    <!-- §3 DATA INTEGRITY AND FIGURES -->
+    <div class="sec" id="integrity">
+      <h2><span class="sn">§3</span> Data integrity and figures</h2>
+
+      <h3>Interpreting results</h3>
+      <p>Results should be interpreted by human beings and discussed as a team before any narrative is built around them. The framing of findings matters: every author on a paper should be able to stand behind the story being told, and that story should be appropriate for the current state of the field so that it passes peer review for the right reasons. Bring results to collaborators and to the PI early, discuss what they do and do not show, and revise accordingly.</p>
+
+      <h3>Negative results</h3>
+      <p>Negative results are results. Absence of a finding, when backed by appropriate statistical evidence, is scientifically meaningful. The field learns from negative results as much as from positive ones. Do not suppress or minimize them.</p>
+
+      <h3>Figure craft</h3>
+      <p>Figures are assembled by human beings. Visual representation and the ordering of information are primary factors in how readers understand scientific work. Figure craft is a multi-month process, not a finishing step. Most things that seem obvious to the person who ran the analysis are not obvious to a reader approaching the work for the first time.</p>
+      <p>Get feedback on your figures early and often. Ask colleagues how things look, what makes sense, and what does not. Bring figures to lab meeting. Revise based on what you hear. Figure critique is central to communicating science well.</p>
+
+      <div class="call rule">
+        <div class="call-title">Data and figures must not be manipulated</div>
+        <p>Adjusting, cropping, or selectively presenting data or images to support a conclusion the underlying data does not support constitutes research misconduct. If you are unsure whether a figure adjustment is appropriate, ask before proceeding. When in doubt, show more, not less.</p>
+      </div>
+    </div>
+
+
+    <!-- §4 HANDLING ERRORS -->
+    <div class="sec" id="errors">
+      <h2><span class="sn">§4</span> Handling errors</h2>
+
+      <h3>Your own mistakes</h3>
+      <p>When you find an error in your own work: acknowledge it honestly and openly, correct it, and let everyone who might be affected know. Do not be embarrassed. Failure and mistakes are the lifeblood of science: they are how scientists learn, and they often illuminate principles that would otherwise remain invisible. Fixing a mistake frequently makes the work stronger than it would have been had the mistake never occurred. Be generous with your self-critique. Be kind to yourself too. Perfection can be boring. Failure is often interesting.</p>
+
+      <h3>Someone else's work</h3>
+      <p>If you think you have found an error in a colleague's code or analysis, proceed with caution. First, ask yourself whether you are certain it is an error, and whether you have a fuller grasp of the problem than the other person. Schedule a meeting to discuss it. Listen to their explanation of how they approached the problem. Take their perspective seriously.</p>
+      <p>If after that conversation you still believe there is an error, write down your reasoning clearly and offer it as a form of help, not a correction. Give the other person the opportunity to investigate and respond. The goal is to strengthen the lab's work, not to score a point. If the error is real and is corrected, everyone benefits.</p>
+
+      <h3>Research misconduct</h3>
+      <p>If you believe you are witnessing research misconduct (fabrication, falsification, willful plagiarism, or sabotage), bring this to the PI directly and in private. Do not confront the person involved. We will discuss how to proceed. If the concern involves the PI, see §8 for institutional resources.</p>
+    </div>
+
+
+    <!-- §5 LAB CULTURE -->
+    <div class="sec" id="culture">
+      <h2><span class="sn">§5</span> Lab culture and environment</h2>
+      <p>The lab should be a place where people feel free to be creative, explore, experiment, make mistakes, ask questions, including questions that feel obvious, and receive thoughtful, constructive answers. Isolation is bad for everyone. Computational work also requires sustained focus and something like a flow state, and that focus deserves protection.</p>
+
+      <h3>Respect for focus</h3>
+      <p>Be mindful of the level of quiet in the shared space. Do not play music on speakers. If you are having a conversation or a phone call that will go on for more than a few minutes, move to a conference room or a private space. Respect the region of quiet around a colleague's desk that allows them to concentrate.</p>
+
+      <h3>Asking about each other's work</h3>
+      <p>Asking a genuine question about something on a colleague's screen is one of the best ways to learn in a computational environment. Do this sparingly and with sensitivity. You do not want to be invasive or to interrupt someone at a critical moment. When someone is clearly in deep focus, wait. When there is a natural opening, curiosity is welcome.</p>
+
+      <h3>Sharing code</h3>
+      <p>Code should be shared freely and often, through Raredon Lab repositories on GitHub. This is how the team learns from one another, how credit is established and tracked, and how contributions remain visible even after people have moved on from the lab. See <a href="03-git-workflow.html">Document 03</a> for the full workflow.</p>
+    </div>
+
+
+    <!-- §6 DISAGREEMENT -->
+    <div class="sec" id="disagreement">
+      <h2><span class="sn">§6</span> Disagreement</h2>
+
+      <h3>With colleagues</h3>
+      <p>Work to understand one another. Assume good intentions. Most disagreements in a lab context stem from knowledge gaps or different framings of the same problem, not from bad faith. If you find yourself in a conflict that feels personal or that you cannot resolve directly, bring it to the PI's attention before it escalates. The lab should be a comfortable space for everyone. If it is not comfortable, something needs to change.</p>
+
+      <h3>With the PI: the rule of three</h3>
+      <p>Scientific disagreement with the PI is healthy and expected. The following approach is recommended when you believe the PI is wrong or that a proposed course of action will waste your time:</p>
+
+      <div class="rule-of-three">
+        <div class="rot-num">1</div>
+        <div class="rot-body">
+          <div class="rot-title">Note it and table it</div>
+          <div class="rot-desc">The first time the PI suggests something you disagree with, note your disagreement internally. You may be right; the PI may be wrong. Set it aside for now.</div>
+        </div>
+        <div class="rot-num">2</div>
+        <div class="rot-body">
+          <div class="rot-title">Write it out and discuss</div>
+          <div class="rot-desc">If the topic comes up a second time, write out specifically why you disagree and bring it to the PI. This conversation often reveals gaps in both parties' understanding, and both sides tend to learn from it.</div>
+        </div>
+        <div class="rot-num">3</div>
+        <div class="rot-body">
+          <div class="rot-title">Do the task</div>
+          <div class="rot-desc">If the disagreement remains unresolved after genuine discussion and the PI asks a third time, do the task. You will probably learn something from it. So will the PI.</div>
+        </div>
+      </div>
+
+      <h3>With external collaborators</h3>
+      <p>Bring any significant disagreement with a collaborator to the PI's attention before responding. Collaborative relationships are long-term investments, and how disagreements are handled matters for the lab's reputation and future partnerships.</p>
+    </div>
+
+
+    <!-- §7 COMMUNICATION AND RELIABILITY -->
+    <div class="sec" id="communication">
+      <h2><span class="sn">§7</span> Communication and reliability</h2>
+
+      <h3>Meetings and seminars</h3>
+      <p>Lab meetings, project meetings, and any meeting you are invited to should be treated as a priority. These are where the lab builds shared understanding, develops trust, solves problems together, and discovers things that no one would find working alone. Show up, pay attention, engage with speakers, ask questions, and contribute.</p>
+      <p>Attending seminars and talks outside the lab is equally important. Yale offers an extraordinary density of scientific talks and speaker series. Aim for one to two seminars per week across your time in the lab. These are a primary mechanism for staying current with what leading scientists are doing, learning how to present science, and encountering ideas from adjacent fields that may prove relevant to your own work. Be selective with your time, but do not opt out entirely.</p>
+
+      <h3>Response expectations</h3>
+      <table>
+        <thead><tr><th>Channel</th><th>Expected response time</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Slack</strong></td>
+            <td>Within a few business days</td>
+            <td>For general questions and lab communication. Not for urgency.</td>
+          </tr>
+          <tr>
+            <td><strong>Email</strong></td>
+            <td>Within 24 hours</td>
+            <td>Even a brief acknowledgment of receipt is sufficient if a full reply will take time.</td>
+          </tr>
+          <tr>
+            <td><strong>Text</strong></td>
+            <td>Same day, during business hours</td>
+            <td>For more immediate or daily matters.</td>
+          </tr>
+          <tr>
+            <td><strong>Phone</strong></td>
+            <td>As able during business hours</td>
+            <td>Reserved for emergencies or things that genuinely benefit from a live conversation. Calls outside business hours should be agreed to in advance by both parties.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>Weekends and evenings are generally protected time. Respect them in others and hold them for yourself.</p>
+
+      <h3>Reliability and not overpromising</h3>
+      <p>Being a reliable team member means knowing your own capacity and communicating it honestly. Do not commit to a deadline you cannot meet. If you need more time, say so early enough for the other person to plan around it. Ask for extensions when you need them, but do not let this become a habit that slows down colleagues unnecessarily.</p>
+      <p>Pass high-quality work slowly rather than rough work quickly. If a task is genuinely beyond your capacity in the available time, delegate and teach so that it can be completed. Protecting your own time is not selfish; it is a precondition for doing good work.</p>
+    </div>
+
+
+    <!-- §8 WHEN SOMETHING IS WRONG -->
+    <div class="sec" id="difficult">
+      <h2><span class="sn">§8</span> When something is wrong</h2>
+      <p>If you feel uncomfortable with a colleague's conduct, a scientific practice you have observed, or pressure you are receiving from any direction, bring it to the PI's attention directly and in private. We will work to understand the situation and find a path forward. The lab should be a comfortable environment for everyone; if it is not, that is a problem worth addressing.</p>
+      <p>If the concern involves the PI and you feel comfortable raising it directly, please do. If you do not feel comfortable doing so, external mentors on your mentorship committee are a good first step. Yale also provides institutional resources for situations that require confidential support or formal reporting.</p>
+
+      <h3>Yale resources</h3>
+      <table>
+        <thead><tr><th>Resource</th><th>What it addresses</th><th>Contact</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Research Integrity &amp; Security Office</strong></td>
+            <td>Research misconduct: fabrication, falsification, plagiarism</td>
+            <td><a href="https://research-support.yale.edu/research-compliance-regulatory-affairs/research-integrity-security-office/research-misconduct" target="_blank">research-support.yale.edu</a></td>
+          </tr>
+          <tr>
+            <td><strong>Yale Research Integrity Policy (7002)</strong></td>
+            <td>Full policy text on research misconduct definitions and procedures</td>
+            <td><a href="https://your.yale.edu/policies-procedures/7002-yale-university-research-integrity-policy" target="_blank">your.yale.edu</a></td>
+          </tr>
+          <tr>
+            <td><strong>SHARE Center</strong></td>
+            <td>Sexual misconduct: crisis support, advocacy, confidential counseling (24/7)</td>
+            <td><a href="https://sharecenter.yale.edu" target="_blank">sharecenter.yale.edu</a></td>
+          </tr>
+          <tr>
+            <td><strong>Title IX Office</strong></td>
+            <td>Sexual misconduct, gender-based discrimination</td>
+            <td><a href="mailto:titleix@yale.edu">titleix@yale.edu</a> · 203-432-6854</td>
+          </tr>
+          <tr>
+            <td><strong>Office of Institutional Equity &amp; Accessibility (OIEA)</strong></td>
+            <td>Discrimination, harassment, retaliation</td>
+            <td><a href="mailto:equity@yale.edu">equity@yale.edu</a> · 203-432-0849 · <a href="https://oiea.yale.edu" target="_blank">oiea.yale.edu</a></td>
+          </tr>
+          <tr>
+            <td><strong>GSAS: Navigating Concerns</strong></td>
+            <td>Graduate student-specific resources and Dean's Designees</td>
+            <td><a href="https://gsas.yale.edu/resources/navigating-concerns" target="_blank">gsas.yale.edu</a></td>
+          </tr>
+          <tr>
+            <td><strong>Yale Mental Health &amp; Counseling</strong></td>
+            <td>Mental health support; strict confidentiality</td>
+            <td><a href="https://your.yale.edu/work-yale/campus-services-and-support/employee-wellness/mental-health-counseling" target="_blank">your.yale.edu</a></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="call note">
+        <div class="call-title">Confidential resources</div>
+        <p>The SHARE Center and Yale Mental Health and Counseling offer strict confidentiality. Speaking with them does not initiate a formal report. If you want to understand your options before deciding whether to report anything formally, these are the right starting points.</p>
+      </div>
+    </div>
+
+
+    <!-- §9 THE PI'S ROLE -->
+    <div class="sec" id="pi-role">
+      <h2><span class="sn">§9</span> The PI's role</h2>
+      <p>The PI's role is to help people learn, develop as independent scholars, and feel comfortable working in the lab both individually and as part of a team. This includes project management, assigning and delegating roles and responsibilities, and maintaining a community of thinkers and doers who can work well alongside one another.</p>
+      <p>The work of being a PI is going well when people are operating with independence and self-direction, feel curious about what they are studying, are enjoying their work, are getting along in the lab, and are actively helping one another troubleshoot problems, transfer knowledge, and cross-train in key techniques, and when no one feels burdened by unreasonable demands.</p>
+      <p>If the PI is failing at any of these things, please say so. We will adjust.</p>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  const sections = document.querySelectorAll('.sec[id]');
+  const tocLinks = document.querySelectorAll('.toc-link');
+  function updateToc() {
+    let current = '';
+    sections.forEach(sec => { if (sec.getBoundingClientRect().top < 140) current = sec.id; });
+    tocLinks.forEach(link => { link.classList.toggle('here', link.getAttribute('href') === '#' + current); });
+  }
+  window.addEventListener('scroll', updateToc, { passive: true });
+  updateToc();
+</script>
+
+</body>
+</html>
