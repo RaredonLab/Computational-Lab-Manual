@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raredon Lab: Computational Lab Manual</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --header-h: 54px;
+      --bg: #FFFFFF; --sidebar-bg: #F6F5F1; --border: #E3E1DC;
+      --text-p: #1A1917; --text-s: #5C5A56; --text-t: #9C9A96;
+      --accent: #1D4ED8; --accent-lt: #EFF6FF; --accent-bd: #BFDBFE;
+      --note-bg: #F0FDF4; --note-bd: #16A34A;
+      --font: 'IBM Plex Sans', sans-serif;
+      --font-serif: 'IBM Plex Serif', serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+    html { font-size: 15px; }
+    body { font-family: var(--font); color: var(--text-p); background: var(--bg); }
+
+    /* ── Header ── */
+    .site-header {
+      position: fixed; top: 0; left: 0; right: 0; height: var(--header-h);
+      background: #141210; display: flex; align-items: center;
+      padding: 0 40px; gap: 10px; z-index: 200;
+    }
+    .hdr-lab { font-family: var(--font-serif); font-size: 15px; font-weight: 600; color: #fff; }
+    .hdr-sep { color: rgba(255,255,255,0.25); font-size: 20px; }
+    .hdr-manual { font-size: 13px; color: rgba(255,255,255,0.55); }
+    .hdr-spacer { flex: 1; }
+    .hdr-badge { font-family: var(--font-mono); font-size: 11px; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); padding: 3px 9px; border-radius: 4px; }
+
+    /* ── Layout ── */
+    .page { padding-top: var(--header-h); }
+
+    /* ── Hero ── */
+    .hero {
+      background: #141210;
+      padding: 72px 0 64px;
+      border-bottom: 1px solid #2a2825;
+    }
+    .hero-inner {
+      max-width: 900px; margin: 0 auto; padding: 0 48px;
+    }
+    .hero-eyebrow {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35); margin-bottom: 18px;
+    }
+    .hero-title {
+      font-family: var(--font-serif); font-size: 42px; font-weight: 600;
+      line-height: 1.15; color: #FFFFFF; margin-bottom: 20px;
+    }
+    .hero-sub {
+      font-size: 17px; line-height: 1.7; color: rgba(255,255,255,0.55);
+      max-width: 560px; margin-bottom: 36px;
+    }
+    .hero-meta {
+      display: flex; gap: 24px; flex-wrap: wrap;
+    }
+    .hero-meta-item {
+      font-family: var(--font-mono); font-size: 12px;
+      color: rgba(255,255,255,0.3);
+    }
+    .hero-meta-item span { color: rgba(255,255,255,0.55); }
+
+    /* ── Content ── */
+    .content { max-width: 900px; margin: 0 auto; padding: 0 48px 96px; }
+
+    /* ── Section labels ── */
+    .section-label {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--text-t);
+      margin: 56px 0 20px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Document cards ── */
+    .doc-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .doc-card {
+      display: block; text-decoration: none;
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 20px 22px; transition: border-color 0.15s, box-shadow 0.15s;
+      background: var(--bg);
+    }
+    .doc-card:hover {
+      border-color: var(--accent-bd);
+      box-shadow: 0 2px 12px rgba(29,78,216,0.08);
+    }
+    .doc-card.unavailable {
+      opacity: 0.45; cursor: default; pointer-events: none;
+    }
+    .doc-card-top {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+    }
+    .doc-num {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+      color: var(--text-t); background: var(--sidebar-bg);
+      border: 1px solid var(--border); border-radius: 4px;
+      padding: 2px 8px; flex-shrink: 0;
+    }
+    .doc-card:hover .doc-num { color: var(--accent); border-color: var(--accent-bd); background: var(--accent-lt); }
+    .doc-card.unavailable .doc-num { color: var(--text-t); }
+    .doc-pill {
+      font-family: var(--font-mono); font-size: 10px;
+      background: var(--sidebar-bg); border: 1px solid var(--border);
+      border-radius: 3px; padding: 1px 7px; color: var(--text-t);
+      margin-left: auto;
+    }
+    .doc-title {
+      font-family: var(--font-serif); font-size: 17px; font-weight: 600;
+      color: var(--text-p); margin-bottom: 6px; line-height: 1.3;
+    }
+    .doc-card:hover .doc-title { color: var(--accent); }
+    .doc-desc {
+      font-size: 13.5px; color: var(--text-s); line-height: 1.6;
+    }
+
+    /* ── Appendices ── */
+    .appendix-list { display: flex; flex-direction: column; gap: 8px; }
+    .appendix-card {
+      display: flex; align-items: center; gap: 14px;
+      text-decoration: none; padding: 14px 18px;
+      border: 1px solid var(--border); border-radius: 8px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .appendix-card:hover {
+      border-color: var(--accent-bd);
+      box-shadow: 0 2px 12px rgba(29,78,216,0.08);
+    }
+    .appendix-num {
+      font-family: var(--font-mono); font-size: 11px; font-weight: 500;
+      color: var(--text-t); background: var(--sidebar-bg);
+      border: 1px solid var(--border); border-radius: 4px;
+      padding: 2px 8px; flex-shrink: 0;
+    }
+    .appendix-card:hover .appendix-num { color: var(--accent); border-color: var(--accent-bd); background: var(--accent-lt); }
+    .appendix-body { flex: 1; }
+    .appendix-title {
+      font-size: 14px; font-weight: 600; color: var(--text-p); margin-bottom: 2px;
+    }
+    .appendix-card:hover .appendix-title { color: var(--accent); }
+    .appendix-desc { font-size: 13px; color: var(--text-s); line-height: 1.5; }
+
+    /* ── How to use callout ── */
+    .how-to-use {
+      background: var(--sidebar-bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 24px 28px; margin-top: 48px;
+    }
+    .how-title {
+      font-family: var(--font-serif); font-size: 16px; font-weight: 600;
+      color: var(--text-p); margin-bottom: 10px;
+    }
+    .how-body {
+      font-size: 14px; color: var(--text-s); line-height: 1.75;
+    }
+    .how-body p { margin-bottom: 8px; }
+    .how-body p:last-child { margin-bottom: 0; }
+
+    /* ── Footer ── */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 48px; max-width: 900px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-left { font-size: 13px; color: var(--text-t); }
+    .footer-right { font-family: var(--font-mono); font-size: 11px; color: var(--text-t); }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header class="site-header">
+  <span class="hdr-lab">Raredon Lab</span>
+  <span class="hdr-sep">·</span>
+  <span class="hdr-manual">Computational Lab Manual</span>
+  <div class="hdr-spacer"></div>
+  <span class="hdr-badge">Yale School of Medicine</span>
+</header>
+
+<div class="page">
+
+  <!-- ── Hero ── -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Raredon Lab · Computational Lab Manual</div>
+      <h1 class="hero-title">Standards and practices<br>for computational science.</h1>
+      <p class="hero-sub">A reference for everyone working computationally in the Raredon Lab, covering tools, workflows, data, code, and culture.</p>
+      <div class="hero-meta">
+        <div class="hero-meta-item">PI &nbsp;<span>Micha Sam Brickman Raredon</span></div>
+        <div class="hero-meta-item">Department &nbsp;<span>Anesthesiology, Yale School of Medicine</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Main content ── -->
+  <div class="content">
+
+    <div class="section-label">Core documents</div>
+
+    <div class="doc-grid">
+
+      <a href="01-onboarding.html" class="doc-card">
+        <div class="doc-card-top">
+          <span class="doc-num">01</span>
+        </div>
+        <div class="doc-title">Onboarding</div>
+        <div class="doc-desc">What this part of the lab does, and guidance for how to get started.</div>
+      </a>
+
+      <a href="02-computing-environment.html" class="doc-card">
+        <div class="doc-card-top">
+          <span class="doc-num">02</span>
+        </div>
+        <div class="doc-title">Computing Environment</div>
+        <div class="doc-desc">Hardware requirements, software installation, HPC access, and a setup checklist to complete in your first week.</div>
+      </a>
+
+      <a href="03-git-workflow.html" class="doc-card">
+        <div class="doc-card-top">
+          <span class="doc-num">03</span>
+        </div>
+        <div class="doc-title">Git &amp; GitHub Workflow</div>
+        <div class="doc-desc">How to manage, share, and version code using the lab's fork-based workflow and daily commit practices.</div>
+      </a>
+
+      <a href="04-coding-standards.html" class="doc-card">
+        <div class="doc-card-top">
+          <span class="doc-num">04</span>
+        </div>
+        <div class="doc-title">Coding Standards</div>
+        <div class="doc-desc">Standards for R scripts, Rmarkdown, helper functions, R packages, and publication-ready code.</div>
+      </a>
+
+      <a href="05-data-management.html" class="doc-card">
+        <div class="doc-card-top">
+          <span class="doc-num">05</span>
+        </div>
+        <div class="doc-title">Data Management</div>
+        <div class="doc-desc">How data is stored, organized, documented, and preserved across the lab's three storage locations.</div>
+      </a>
+
+      <a href="06-ai-tools.html" class="doc-card">
+        <div class="doc-card-top">
+          <span class="doc-num">06</span>
+        </div>
+        <div class="doc-title">AI Tools &amp; Claude</div>
+        <div class="doc-desc">How to use AI effectively, honestly, and without losing your own judgment. Includes CLAUDE.md and Skills files.</div>
+      </a>
+
+      <a href="07-ethics-teamwork.html" class="doc-card unavailable">
+        <div class="doc-card-top">
+          <span class="doc-num">07</span>
+          <span class="doc-pill">Coming soon</span>
+        </div>
+        <div class="doc-title">Ethics &amp; Teamwork</div>
+        <div class="doc-desc">Authorship, data integrity, credit, communication, and lab culture.</div>
+      </a>
+
+      <a href="08-publication.html" class="doc-card unavailable">
+        <div class="doc-card-top">
+          <span class="doc-num">08</span>
+          <span class="doc-pill">Coming soon</span>
+        </div>
+        <div class="doc-title">Publication &amp; Archiving</div>
+        <div class="doc-desc">Figure standards, code release, data deposition, and project archiving at publication.</div>
+      </a>
+
+    </div>
+
+    <div class="section-label">Appendices</div>
+
+    <div class="appendix-list">
+      <a href="appendix-a-exit-protocol.html" class="appendix-card">
+        <span class="appendix-num">A</span>
+        <div class="appendix-body">
+          <div class="appendix-title">Lab Exit Protocol</div>
+          <div class="appendix-desc">Data handoff, file transfer, GitHub cleanup, and account deactivation when leaving the lab or concluding a project.</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="how-to-use">
+      <div class="how-title">How to use this manual</div>
+      <div class="how-body">
+        <p>Read Documents 01 and 02 in your first week, in order. They cover the lab's context and the practical setup required to get started. Documents 03 through 06 can be read in any order and referred back to as needed.</p>
+        <p>Each document is standalone: you can link directly to any section using the URL and the anchor in the sidebar. The manual will be updated as the lab's tools and practices evolve.</p>
+        <p>If you have questions not addressed here, ask on Slack or bring them to your weekly 1:1.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer class="footer">
+    <div class="footer-left">Raredon Lab · Department of Anesthesiology · Yale School of Medicine</div>
+    <div class="footer-right">Computational Lab Manual</div>
+  </footer>
+
+</div>
+</body>
+</html>
