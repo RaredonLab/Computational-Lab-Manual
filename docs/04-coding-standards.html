@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>04 — Coding Standards | Raredon Lab Manual</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sidebar-w: 256px; --header-h: 54px;
+      --bg: #FFFFFF; --sidebar-bg: #F6F5F1; --border: #E3E1DC;
+      --text-p: #1A1917; --text-s: #5C5A56; --text-t: #9C9A96;
+      --accent: #1D4ED8; --accent-lt: #EFF6FF; --accent-bd: #BFDBFE;
+      --code-bg: #F6F5F1; --code-bd: #D8D6D0;
+      --note-bg: #F0FDF4; --note-bd: #16A34A;
+      --warn-bg: #FFFBEB; --warn-bd: #D97706;
+      --rule-bg: #FFF1F2; --rule-bd: #E11D48;
+      --font: 'IBM Plex Sans', sans-serif;
+      --font-serif: 'IBM Plex Serif', serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+    html { scroll-behavior: smooth; font-size: 15px; }
+    body { font-family: var(--font); line-height: 1.75; color: var(--text-p); background: var(--bg); }
+
+    .site-header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); background: #141210; display: flex; align-items: center; padding: 0 24px; gap: 10px; z-index: 200; }
+    .hdr-lab { font-family: var(--font-serif); font-size: 15px; font-weight: 600; color: #fff; }
+    .hdr-sep { color: rgba(255,255,255,0.25); font-size: 20px; }
+    .hdr-manual { font-size: 13px; color: rgba(255,255,255,0.55); }
+    .hdr-spacer { flex: 1; }
+    .hdr-badge { font-family: var(--font-mono); font-size: 11px; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); padding: 3px 9px; border-radius: 4px; }
+
+    .layout { display: flex; padding-top: var(--header-h); min-height: 100vh; }
+
+    .sidebar { position: fixed; top: var(--header-h); left: 0; width: var(--sidebar-w); height: calc(100vh - var(--header-h)); background: var(--sidebar-bg); border-right: 1px solid var(--border); overflow-y: auto; padding: 28px 0 48px; }
+    .sb-section { padding: 0 14px; margin-bottom: 28px; }
+    .sb-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-t); padding: 0 8px; margin-bottom: 6px; }
+    .nav-link { display: flex; align-items: baseline; gap: 6px; padding: 5px 8px; border-radius: 5px; font-size: 13px; color: var(--text-s); text-decoration: none; transition: background 0.12s, color 0.12s; line-height: 1.4; }
+    .nav-link:hover { background: rgba(0,0,0,0.05); color: var(--text-p); }
+    .nav-link.active { background: var(--accent-lt); color: var(--accent); font-weight: 500; }
+    .nav-link .n { font-family: var(--font-mono); font-size: 11px; color: var(--text-t); flex-shrink: 0; min-width: 22px; }
+    .nav-link.active .n { color: var(--accent); opacity: 0.7; }
+    .sb-div { border: none; border-top: 1px solid var(--border); margin: 10px 14px 16px; }
+    .toc-link { display: block; padding: 3px 8px; border-radius: 4px; font-size: 12.5px; color: var(--text-s); text-decoration: none; transition: color 0.12s; line-height: 1.5; }
+    .toc-link:hover { color: var(--accent); }
+    .toc-link.here { color: var(--accent); font-weight: 500; }
+
+    .content { margin-left: var(--sidebar-w); width: calc(100% - var(--sidebar-w)); max-width: calc(var(--sidebar-w) + 800px); padding: 52px 60px 100px; }
+
+    .eyebrow { font-family: var(--font-mono); font-size: 12px; color: var(--accent); font-weight: 500; letter-spacing: 0.05em; margin-bottom: 10px; }
+    .doc-title { font-family: var(--font-serif); font-size: 36px; font-weight: 600; line-height: 1.18; color: var(--text-p); margin-bottom: 14px; }
+    .doc-sub { font-size: 17px; color: var(--text-s); line-height: 1.65; max-width: 580px; padding-bottom: 36px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+
+    .sec { margin-bottom: 56px; scroll-margin-top: calc(var(--header-h) + 20px); }
+    h2 { font-family: var(--font-serif); font-size: 23px; font-weight: 600; color: var(--text-p); display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .sn { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--text-t); background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; flex-shrink: 0; }
+    h3 { font-size: 15px; font-weight: 600; color: var(--text-p); margin: 28px 0 10px; }
+    p { margin-bottom: 14px; }
+    p:last-child { margin-bottom: 0; }
+    a { color: var(--accent); }
+    ul { margin: 12px 0 14px 20px; }
+    ul li { margin-bottom: 6px; line-height: 1.6; }
+
+    .call { border-radius: 6px; padding: 14px 18px; border-left: 3px solid; margin: 22px 0; }
+    .call-title { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 6px; }
+    .call p { font-size: 14px; line-height: 1.65; margin: 0; }
+    .call p + p { margin-top: 8px; }
+    .call.note { background: var(--note-bg); border-color: var(--note-bd); }
+    .call.note .call-title { color: #15803D; }
+    .call.warn { background: var(--warn-bg); border-color: var(--warn-bd); }
+    .call.warn .call-title { color: #B45309; }
+    .call.rule { background: var(--rule-bg); border-color: var(--rule-bd); }
+    .call.rule .call-title { color: #BE123C; }
+    .call.info { background: var(--accent-lt); border-color: var(--accent-bd); }
+    .call.info .call-title { color: var(--accent); }
+
+    code { font-family: var(--font-mono); font-size: 13px; background: var(--code-bg); border: 1px solid var(--code-bd); border-radius: 3px; padding: 1px 5px; color: #BE185D; }
+    .cb-wrap { margin: 20px 0; }
+    .cb-label { display: inline-block; font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-t); background: var(--sidebar-bg); border: 1px solid var(--border); border-bottom: none; border-radius: 5px 5px 0 0; padding: 4px 12px; position: relative; z-index: 1; }
+    pre { background: var(--code-bg); border: 1px solid var(--code-bd); border-radius: 0 6px 6px 6px; padding: 18px 20px; overflow-x: auto; font-family: var(--font-mono); font-size: 13px; line-height: 1.65; margin: 0; color: var(--text-p); }
+    .cb-wrap pre code { background: none; border: none; padding: 0; color: inherit; font-size: inherit; }
+    .cm { color: var(--text-t); font-style: italic; }
+    .ck { color: #7C3AED; }
+    .cs { color: #15803D; }
+
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+    th { background: var(--sidebar-bg); font-weight: 600; text-align: left; padding: 9px 14px; border: 1px solid var(--border); font-size: 12px; }
+    td { padding: 9px 14px; border: 1px solid var(--border); vertical-align: top; line-height: 1.55; }
+    tr:nth-child(even) td { background: #FAFAF8; }
+
+    .dodont { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+    .do-box, .dn-box { border-radius: 6px; padding: 16px; font-size: 13.5px; line-height: 1.6; }
+    .do-box { background: var(--note-bg); border: 1px solid #BBF7D0; }
+    .dn-box { background: var(--rule-bg); border: 1px solid #FECDD3; }
+    .box-lbl { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px; }
+    .do-box .box-lbl { color: #15803D; }
+    .dn-box .box-lbl { color: #BE123C; }
+    .do-box code, .dn-box code { background: rgba(0,0,0,0.06); border-color: rgba(0,0,0,0.1); }
+    .dn-box code { color: #9F1239; }
+    .samp { display: block; margin-bottom: 8px; }
+    .samp:last-child { margin-bottom: 0; }
+
+    .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 24px 0; }
+    .cat-card { border: 1px solid var(--border); border-radius: 8px; padding: 18px; }
+    .cat-card .cat-title { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--accent); margin-bottom: 8px; letter-spacing: 0.03em; }
+    .cat-card .cat-ext { font-family: var(--font-mono); font-size: 11px; color: var(--text-t); background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 3px; padding: 1px 6px; display: inline-block; margin-bottom: 10px; }
+    .cat-card p { font-size: 13px; color: var(--text-s); line-height: 1.6; margin: 0; }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="hdr-lab">Raredon Lab</span>
+  <span class="hdr-sep">·</span>
+  <span class="hdr-manual">Computational Lab Manual</span>
+  <div class="hdr-spacer"></div>
+  <span class="hdr-badge">Document 04 of 08</span>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Manual navigation">
+    <div class="sb-section">
+      <div class="sb-label">Documents</div>
+      <a href="index.html" class="nav-link"><span class="n">00</span> Overview &amp; index</a>
+      <a href="01-onboarding.html" class="nav-link"><span class="n">01</span> Onboarding</a>
+      <a href="02-computing-environment.html" class="nav-link"><span class="n">02</span> Computing environment</a>
+      <a href="03-git-workflow.html" class="nav-link"><span class="n">03</span> Git &amp; GitHub workflow</a>
+      <a href="04-coding-standards.html" class="nav-link active" aria-current="page"><span class="n">04</span> Coding standards</a>
+      <a href="05-data-management.html" class="nav-link"><span class="n">05</span> Data management</a>
+      <a href="06-ai-tools.html" class="nav-link"><span class="n">06</span> AI tools &amp; Claude</a>
+      <a href="07-ethics-teamwork.html" class="nav-link"><span class="n">07</span> Ethics &amp; teamwork</a>
+      <a href="08-publication.html" class="nav-link"><span class="n">08</span> Publication &amp; archiving</a>
+    </div>
+    <hr class="sb-div">
+    <div class="sb-section">
+      <div class="sb-label">Appendices</div>
+      <a href="appendix-a-exit-protocol.html" class="nav-link"><span class="n">A</span> Lab exit protocol</a>
+    </div>
+    <hr class="sb-div">
+    <div class="sb-section">
+      <div class="sb-label">On this page</div>
+      <a href="#philosophy" class="toc-link">Philosophy</a>
+      <a href="#categories" class="toc-link">Three categories of code</a>
+      <a href="#scripts" class="toc-link">R scripts</a>
+      <a href="#rmarkdown" class="toc-link">Rmarkdown</a>
+      <a href="#functions" class="toc-link">Helper functions</a>
+      <a href="#packages" class="toc-link">R packages</a>
+      <a href="#publication-ready" class="toc-link">Publication-ready code</a>
+      <a href="#antipatterns" class="toc-link">Patterns to avoid</a>
+    </div>
+  </nav>
+
+  <main class="content">
+    <div class="eyebrow">Document 04</div>
+    <h1 class="doc-title">Coding Standards</h1>
+    <p class="doc-sub">Practical guidance for writing R code that is readable, reproducible, and transferable — to collaborators, to reviewers, and to yourself six months from now.</p>
+
+
+    <!-- §1 PHILOSOPHY -->
+    <div class="sec" id="philosophy">
+      <h2><span class="sn">§1</span> Philosophy</h2>
+      <p>The practices described here represent what works when someone other than the original author needs to understand and build on your code. None of them should feel like extra overhead once they become habit. Most are simply decisions made in advance so you do not have to remake them under pressure.</p>
+      <p>Exploration is a normal part of computational science. You will write messy, non-linear scripts during the early stages of a project, and that is expected. The standards here describe what to aim for by the time work is shared with others or committed as a permanent record. The gap between a working draft and that standard is not a sign of failure. It is the polishing step.</p>
+      <p>The core question to hold in mind when writing code is: <em>could someone who was not present when I wrote this reproduce my results, understand my reasoning, and build on my work?</em> If yes, you are on the right track.</p>
+    </div>
+
+
+    <!-- §2 THREE CATEGORIES -->
+    <div class="sec" id="categories">
+      <h2><span class="sn">§2</span> Three categories of code</h2>
+      <p>Three categories of code appear throughout a research computing workflow, each with its own purpose, standards, and home in the repository. Knowing which category applies shapes every decision that follows.</p>
+
+      <div class="cat-grid">
+        <div class="cat-card">
+          <div class="cat-title">Scripts</div>
+          <span class="cat-ext">.R</span>
+          <p>The primary medium for doing scientific work. Scripts are where analysis happens: data is loaded, transformed, visualized, and saved. Most day-to-day computational work takes the form of scripting.</p>
+        </div>
+        <div class="cat-card">
+          <div class="cat-title">Rmarkdown</div>
+          <span class="cat-ext">.Rmd → .html</span>
+          <p>The primary medium for teaching and communicating work. Rmarkdown documents narrate analysis that has already been scripted, producing HTML vignettes that others can read and learn from.</p>
+        </div>
+        <div class="cat-card">
+          <div class="cat-title">R Packages</div>
+          <span class="cat-ext">CRAN standard</span>
+          <p>Formal, versioned, tested tools intended for broad or long-term reuse. Packages are shared infrastructure. They are built to higher standards and released publicly on GitHub.</p>
+        </div>
+      </div>
+
+      <p>A useful way to think about the relationship: you write a script to run an analysis, then write an Rmarkdown document to explain and share what you found, and eventually extract the most reusable pieces of logic into package functions. Each category builds on the others.</p>
+    </div>
+
+
+    <!-- §3 R SCRIPTS -->
+    <div class="sec" id="scripts">
+      <h2><span class="sn">§3</span> R scripts</h2>
+
+      <h3>The header block</h3>
+      <p>Every <code>.R</code> script begins with a header block that identifies the script, states its purpose, and declares where data comes from and goes. This block should be readable in seconds and answer every practical question someone might have before running the file.</p>
+
+      <div class="cb-wrap">
+        <span class="cb-label">Standard script header</span>
+        <pre><code><span class="cm"># ============================================================
+# Title:   01_20250315_AB_preprocessing-qc.R
+# Author:  Author Name (AB)
+# Date:    2025-03-15
+# Purpose: Quality control filtering and doublet removal for
+#          rat lung scRNAseq cohort 1 (n=6 samples)
+# ------------------------------------------------------------
+# Inputs:
+#   /hpc/path/to/data/cohort1_raw_counts.rds
+# Outputs:
+#   /hpc/path/to/output/01_20250315_AB_filtered.rds
+#   figures/01_20250315_AB_qc-metrics.pdf
+# ============================================================</span>
+
+<span class="cm"># ── Libraries ────────────────────────────────────────────────</span>
+library(PackageA)
+library(PackageB)
+
+<span class="cm"># ── Source helper functions ──────────────────────────────────</span>
+source(<span class="cs">"functions/helpers_qc.R"</span>)
+source(<span class="cs">"functions/helpers_viz.R"</span>)
+
+<span class="cm"># ── File paths ───────────────────────────────────────────────</span>
+path_input  &lt;- <span class="cs">"/hpc/path/to/data/cohort1_raw_counts.rds"</span>
+path_output &lt;- <span class="cs">"/hpc/path/to/output/01_20250315_AB_filtered.rds"</span>
+path_figs   &lt;- <span class="cs">"figures/"</span></code></pre>
+      </div>
+
+      <p>The header block has four parts, always in this order:</p>
+      <table>
+        <thead><tr><th>Part</th><th>Contents</th><th>Required</th></tr></thead>
+        <tbody>
+          <tr><td>Title block</td><td>Filename, author and initials, date, plain-language purpose</td><td>Always</td></tr>
+          <tr><td>Inputs / Outputs</td><td>Full absolute paths to every file read and written by the script</td><td>Always</td></tr>
+          <tr><td>Library calls</td><td>All <code>library()</code> calls, grouped together</td><td>Always</td></tr>
+          <tr><td>File path variables</td><td>Named variables for every input and output path</td><td>Always</td></tr>
+        </tbody>
+      </table>
+
+      <div class="call rule">
+        <div class="call-title">Declare paths at the top</div>
+        <p>File paths should never be embedded inline deep in a script. A reader should be able to open your script, read the header, and immediately know what data it operates on and where results will be saved — before reading a single line of analysis code. Declare every input and output path as a named variable in the header and reference that variable throughout the script. This also makes the script trivial to adapt for a new dataset or a new machine.</p>
+      </div>
+
+      <h3>Script scope and length</h3>
+      <p>A single script should represent one coherent operation: one stage of an analysis, one logical unit of work. A useful heuristic is that a script should represent roughly one day of computational work to reproduce and understand. When a script starts combining multiple distinct goals, it is time to split it.</p>
+      <p>Length is not itself the problem; sprawl is. A 500-line script that moves cleanly through a single preprocessing pipeline is well-scoped. A 500-line script that preprocesses data, runs clustering, builds a figure panel, and exports a supplementary table is four scripts that have been merged into one.</p>
+
+      <div class="call note">
+        <div class="call-title">On exploratory scripts</div>
+        <p>Exploratory, stream-of-consciousness scripting is a normal part of doing science computationally — the equivalent of rough notes in a lab notebook. Work this way freely during early-stage analysis. Before sharing that work with others or committing it as the primary record, clean it up: break it into staged scripts, separate reusable logic into helper functions, and make sure inputs and outputs are clearly declared. The cleanup step is expected; it is not evidence that the exploration was wrong.</p>
+      </div>
+
+      <h3>Section dividers</h3>
+      <p>Within a script, use R's standard section divider syntax to organize code into named sections. RStudio and Positron both recognize this format and render a navigable outline, which makes longer scripts much easier to work with.</p>
+
+      <div class="cb-wrap">
+        <span class="cb-label">Section dividers</span>
+        <pre><code><span class="cm"># ── Load and inspect data ────────────────────────────────────</span>
+
+obj &lt;- readRDS(path_input)
+dim(obj)
+
+<span class="cm"># ── QC filtering ─────────────────────────────────────────────</span>
+
+obj &lt;- filter_by_qc(obj, min_features = 200, max_mt_pct = 20)
+
+<span class="cm"># ── Save output ──────────────────────────────────────────────</span>
+
+saveRDS(obj, path_output)</code></pre>
+      </div>
+
+      <h3>Inline comments</h3>
+      <p>For primary working scripts, comment enough to retrace your thinking: note what a step is doing, why a parameter was chosen, where a decision was made. You do not need a comment on every line. For polished scripts intended to be transferred to others or used as teaching material, err toward more — every meaningful block should explain its purpose.</p>
+      <p>When in doubt, write the comment. Future readers cannot ask you what you were thinking.</p>
+    </div>
+
+
+    <!-- §4 RMARKDOWN -->
+    <div class="sec" id="rmarkdown">
+      <h2><span class="sn">§4</span> Rmarkdown</h2>
+
+      <h3>When to use Rmarkdown vs. a script</h3>
+      <p>Scripts are for doing primary analysis work. Rmarkdown is for teaching, communicating, or creating a permanent readable record of work that has already been done. The typical flow is script first, Rmarkdown second.</p>
+      <p>A good Rmarkdown document is not a replacement for a script. It is a narrated tour of one. It loads the same data, runs the same or similar code, and produces the same outputs, but does so in a format where prose, code, and figures live together on the page. The intended reader is someone who wants to understand what was done and why, not just run a pipeline.</p>
+
+      <h3>The YAML header</h3>
+      <p>Every Rmarkdown document begins with a YAML header that identifies the document and controls its output format.</p>
+
+      <div class="cb-wrap">
+        <span class="cb-label">Standard YAML header</span>
+        <pre><code>---
+title: <span class="cs">"01 — EDA Overview: Rat Lung scRNAseq Cohort 1"</span>
+author: <span class="cs">"Author Name"</span>
+date: <span class="cs">"2025-03-15"</span>
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: hide
+    theme: flatly
+---</code></pre>
+      </div>
+
+      <h3>Global chunk options and output cleanliness</h3>
+      <p>The knit HTML output should be clean and readable. Long console outputs, warning messages, and package loading text add noise without informational value. Set global chunk options in the first code chunk of every Rmarkdown file.</p>
+
+      <div class="cb-wrap">
+        <span class="cb-label">Setup chunk — place immediately after YAML</span>
+        <pre><code>```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,   <span class="cm"># show code; readers can hide via code_folding</span>
+  warning = FALSE,  <span class="cm"># suppress warnings from output</span>
+  message = FALSE,  <span class="cm"># suppress package loading messages</span>
+  fig.width  = 8,
+  fig.height = 6
+)
+```</code></pre>
+      </div>
+
+      <p>Suppress output that a reader does not need to see. The goal is not to hide information — it is to keep the document focused. If a chunk produces output that is meaningful to the reader, such as a printed summary table, keep it visible.</p>
+
+      <h3>Chunk naming</h3>
+      <p>Name your chunks. Named chunks produce more useful error messages when knitting fails, make the document outline navigable, and allow selective caching. Use lowercase, hyphen-separated names that describe what the chunk does.</p>
+
+      <div class="cb-wrap">
+        <span class="cb-label">Chunk naming examples</span>
+        <pre><code>```{r load-data}
+```{r qc-filtering}
+```{r umap-plot}
+```{r export-table}</code></pre>
+      </div>
+
+      <h3>Committing HTML outputs</h3>
+      <p>Knit HTML files belong in <code>docs/</code> and should be committed to Git. This gives anyone access to a readable, rendered version of the analysis without needing to re-run the code. Apply the same naming convention as the source <code>.Rmd</code> file.</p>
+
+      <div class="call warn">
+        <div class="call-title">Keep HTML outputs in sync</div>
+        <p>If you update an Rmarkdown file significantly, re-knit and commit the updated HTML. A <code>docs/</code> folder with HTML files that are months behind their source files is more confusing than helpful.</p>
+      </div>
+    </div>
+
+
+    <!-- §5 HELPER FUNCTIONS -->
+    <div class="sec" id="functions">
+      <h2><span class="sn">§5</span> Helper functions</h2>
+
+      <h3>When to write a helper function</h3>
+      <p>If a block of code is longer than roughly 25 lines, or if you find yourself copying the same logic across two scripts, that code belongs in a helper function in the <code>functions/</code> folder. The test is simple: if you would rather copy the code than write the function, that is exactly the moment to write the function.</p>
+      <p>Helper functions serve two purposes at once. They keep individual scripts short and readable — a script that calls <code>filter_by_qc()</code> is clearer than one that embeds 40 lines of filtering logic inline. They also create a shared, versioned, improvable tool that others can use rather than each person maintaining their own private version of the same logic.</p>
+
+      <h3>Anatomy of a good helper function</h3>
+      <p>Document helper functions with Roxygen-style headers. Using Roxygen for helper functions as well as formal packages means the transition to a package, if and when that happens, is seamless. Plain comments above the function are acceptable for quick, narrowly scoped functions, but Roxygen is preferred.</p>
+
+      <div class="cb-wrap">
+        <span class="cb-label">Well-documented helper function</span>
+        <pre><code><span class="cm">#' Filter cells by QC metrics
+#'
+#' Applies minimum and maximum feature count thresholds and a
+#' mitochondrial percentage threshold to a single-cell object.
+#' All thresholds are parameterized so the function can be
+#' adapted across datasets without editing the function body.
+#'
+#' @param obj          A single-cell object.
+#' @param min_features Minimum number of features per cell. Default 200.
+#' @param max_features Maximum number of features per cell. Default 6000.
+#' @param max_mt_pct   Maximum mitochondrial percentage. Default 20.
+#'
+#' @return A filtered single-cell object.
+#' @export</span>
+filter_by_qc &lt;- <span class="ck">function</span>(obj,
+                         min_features = 200,
+                         max_features = 6000,
+                         max_mt_pct   = 20) {
+
+  <span class="cm"># Apply feature count thresholds</span>
+  keep &lt;- obj$nFeature &gt; min_features &amp; obj$nFeature &lt; max_features
+
+  <span class="cm"># Apply mitochondrial percentage threshold</span>
+  keep &lt;- keep &amp; obj$pct_mt &lt; max_mt_pct
+
+  <span class="ck">return</span>(obj[, keep])
+}</code></pre>
+      </div>
+
+      <h3>Generalization</h3>
+      <p>Write functions to be useful beyond the immediate analysis. The most important practice is to avoid hardcoding: any numeric threshold, column name, string pattern, or file path that could reasonably vary across datasets should be a function argument with a sensible default. This costs almost nothing at the time of writing and substantially extends the function's useful life.</p>
+
+      <div class="dodont">
+        <div class="do-box">
+          <div class="box-lbl">✓ Parameterized</div>
+          <code class="samp">filter_by_qc(obj, min_features = 200, max_mt_pct = 20)</code>
+          <code class="samp">plot_embedding(obj, color_by = "celltype", pt_size = 0.5)</code>
+          <code class="samp">export_markers(markers_df, path_out, top_n = 10)</code>
+        </div>
+        <div class="dn-box">
+          <div class="box-lbl">✗ Hardcoded</div>
+          <code class="samp">obj[obj$nFeature > 200 &amp; obj$pct_mt &lt; 20, ]</code>
+          <code class="samp">plot(obj, group = "celltype", size = 0.5)</code>
+          <code class="samp">write.csv(head(markers, 10), "output/markers.csv")</code>
+        </div>
+      </div>
+
+      <h3>The case for a shared function library</h3>
+      <p>One recurring problem in computational research is that every team member develops their own private version of the same functions: slightly different, incompatible, and impossible to improve collectively. When a better approach is found, each person has to rediscover it separately.</p>
+      <p>The <code>functions/</code> folder, versioned in Git, is the solution to this. When a helper function solves a general problem well, it belongs there — available to everyone, improvable by anyone. When a function in <code>functions/</code> is updated, everyone benefits from the update immediately. This is how a group builds collective computational infrastructure rather than a collection of parallel silos.</p>
+
+      <div class="call note">
+        <div class="call-title">Standard R conventions apply</div>
+        <p>Use <code>snake_case</code> for function and argument names. Return a single object explicitly with <code>return()</code>. Keep functions focused on one task. If a function is doing two distinct things, it should probably be two functions.</p>
+      </div>
+    </div>
+
+
+    <!-- §6 R PACKAGES -->
+    <div class="sec" id="packages">
+      <h2><span class="sn">§6</span> R packages</h2>
+
+      <h3>When to build a package</h3>
+      <p>Not every collection of helper functions needs to become a package. Functions that support a single project can live comfortably in <code>functions/</code>. A package is warranted when the tools are broadly applicable, when they are being used across multiple projects, or when you want formal documentation and testing infrastructure that supports long-term use and public release. NICHES is an example of a tool that earned package status through broad applicability and external demand.</p>
+
+      <h3>Standards</h3>
+      <p>R packages in this lab follow CRAN standards. This means all functions are documented with structured documentation headers; the package is built, checked, and tested using standard R package development tools; a documentation site is generated and kept current; and a <code>NEWS.md</code> file tracks changes across versions. The package must pass all standard checks with no errors or warnings before it is considered complete.</p>
+
+      <h3>AI-assisted package development</h3>
+      <p>R packages should be built using Claude Code or a comparable AI coding tool. Package development involves substantial boilerplate — metadata files, namespace management, test scaffolding, documentation site configuration — that AI handles well and that is tedious to write by hand. Using AI for infrastructure frees you to focus on the scientific logic of the functions themselves.</p>
+
+      <h3>Testing and vignettes</h3>
+      <p>Every package should be tested on both synthetic data and small-scale real-world data before release. Do not release a package whose test coverage consists only of examples you know will pass. Every package should also include at least one demo script showing how to apply it to real in-house data, and at least one vignette knit to HTML that explains the package's purpose and core workflow. A package without a working vignette is a package that no one will be able to use without asking the author for help. All packages are pushed to GitHub under the RaredonLab organization.</p>
+    </div>
+
+
+    <!-- §7 PUBLICATION-READY CODE -->
+    <div class="sec" id="publication-ready">
+      <h2><span class="sn">§7</span> Publication-ready code</h2>
+      <p>Publication-ready code is primarily about reproducibility. The standard is: given your scripts, your data paths, and a compatible computing environment, someone else should be able to reproduce every result, figure, and table in your paper without asking you a single question.</p>
+
+      <h3>Linear execution</h3>
+      <p>Each script should be independently executable. It should load its inputs from disk, operate on them, and save its outputs to disk. A reader should not need to run a different script first to generate objects that this script expects to find in memory.</p>
+      <p>Non-linear dependencies — where Script B can only run if Script A has been run in the same session — are one of the most common causes of irreproducible analysis. They are easy to introduce and very hard to debug after time has passed. The discipline of loading and saving explicit objects at the boundary of every script eliminates them.</p>
+
+      <div class="dodont">
+        <div class="do-box">
+          <div class="box-lbl">✓ Self-contained</div>
+          <code class="samp">obj &lt;- readRDS(path_input)</code>
+          <code class="samp"># ... analysis ...</code>
+          <code class="samp">saveRDS(obj, path_output)</code>
+        </div>
+        <div class="dn-box">
+          <div class="box-lbl">✗ Session-dependent</div>
+          <code class="samp"># assumes 'obj' is already in the environment</code>
+          <code class="samp"># from a script run earlier this session</code>
+          <code class="samp">obj &lt;- run_next_step(obj, ...)</code>
+        </div>
+      </div>
+
+      <h3>The one-operation principle</h3>
+      <p>Think of each script as a single, well-defined operation in a larger pipeline. Script 01 preprocesses. Script 02 clusters. Script 03 annotates. This structure means any step can be re-run independently, any step can be understood independently, and the full pipeline is legible as a sequence of named stages.</p>
+      <p>When all the work from a project lives in a single long script, reproducing one figure requires understanding all of it. When work is staged into discrete scripts, a collaborator can go directly to the script that produced the output they care about.</p>
+
+      <h3>Date stamps and authorship</h3>
+      <p>Every script, every output file, and every figure is stamped with a date and initials. See <a href="03-git-workflow.html">Document 03 §11</a> for the full naming convention. A dated, initialed filename combined with a clear script header means any output can be traced back to the code and data that produced it, by anyone, at any time.</p>
+    </div>
+
+
+    <!-- §8 PATTERNS TO AVOID -->
+    <div class="sec" id="antipatterns">
+      <h2><span class="sn">§8</span> Patterns to avoid</h2>
+      <p>The following failure modes are common in research computing. None of them reflect bad intentions — they emerge from working quickly. Being aware of them is the first step to avoiding them.</p>
+
+      <h3>The monolithic script</h3>
+      <p>A single script that runs an entire multi-stage analysis — from raw data through final figures — is difficult to transfer to another person or return to after six months. Breaking work into staged scripts, each representing one operation, keeps every part of the analysis tractable on its own.</p>
+
+      <h3>Session-dependent analysis</h3>
+      <p>Writing code that assumes specific objects are already in the environment — because they were created by a script run earlier in the same session — produces analysis that cannot be reproduced without reconstructing the exact session state. Load from disk at the top of each script and save to disk before finishing. The small cost of explicit file I/O at each stage pays for itself the first time you need to rerun a single step.</p>
+
+      <h3>Private helper functions</h3>
+      <p>Writing a useful function inline in a script, using it a few times, and never formalizing it means that function disappears when the script is archived. It cannot be improved by others and will be reinvented slightly differently by the next person who needs it. If a block of code is worth writing, it is worth putting in <code>functions/</code>.</p>
+
+      <h3>Hardcoded values</h3>
+      <p>Embedding numeric thresholds, column names, or file paths directly in function bodies rather than as arguments makes those functions impossible to reuse on different data. Parameterize anything that could reasonably vary.</p>
+
+      <h3>Uncommitted work</h3>
+      <p>Code that is not pushed to GitHub cannot be seen, reviewed, or helped with by anyone else. This applies especially to helper functions: a function that exists only on your laptop is not part of any shared infrastructure. See <a href="03-git-workflow.html">Document 03</a> for the full commit and push workflow.</p>
+
+      <div class="call info">
+        <div class="call-title">Getting started</div>
+        <p>If some of these practices are new to you, the best approach is to start with one and build from there. Write a clean header block on your next script. Name your chunks in your next Rmarkdown file. Move the next long block you write into a helper function. Good habits compound over time, and none of them require perfection from the beginning.</p>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  const sections = document.querySelectorAll('.sec[id]');
+  const tocLinks = document.querySelectorAll('.toc-link');
+  function updateToc() {
+    let current = '';
+    sections.forEach(sec => { if (sec.getBoundingClientRect().top < 140) current = sec.id; });
+    tocLinks.forEach(link => { link.classList.toggle('here', link.getAttribute('href') === '#' + current); });
+  }
+  window.addEventListener('scroll', updateToc, { passive: true });
+  updateToc();
+</script>
+
+</body>
+</html>

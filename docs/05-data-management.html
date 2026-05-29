@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>05 — Data Management | Raredon Lab Manual</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sidebar-w: 256px; --header-h: 54px;
+      --bg: #FFFFFF; --sidebar-bg: #F6F5F1; --border: #E3E1DC;
+      --text-p: #1A1917; --text-s: #5C5A56; --text-t: #9C9A96;
+      --accent: #1D4ED8; --accent-lt: #EFF6FF; --accent-bd: #BFDBFE;
+      --code-bg: #F6F5F1; --code-bd: #D8D6D0;
+      --note-bg: #F0FDF4; --note-bd: #16A34A;
+      --warn-bg: #FFFBEB; --warn-bd: #D97706;
+      --rule-bg: #FFF1F2; --rule-bd: #E11D48;
+      --font: 'IBM Plex Sans', sans-serif;
+      --font-serif: 'IBM Plex Serif', serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+    html { scroll-behavior: smooth; font-size: 15px; }
+    body { font-family: var(--font); line-height: 1.75; color: var(--text-p); background: var(--bg); }
+
+    .site-header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); background: #141210; display: flex; align-items: center; padding: 0 24px; gap: 10px; z-index: 200; }
+    .hdr-lab { font-family: var(--font-serif); font-size: 15px; font-weight: 600; color: #fff; }
+    .hdr-sep { color: rgba(255,255,255,0.25); font-size: 20px; }
+    .hdr-manual { font-size: 13px; color: rgba(255,255,255,0.55); }
+    .hdr-spacer { flex: 1; }
+    .hdr-badge { font-family: var(--font-mono); font-size: 11px; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); padding: 3px 9px; border-radius: 4px; }
+
+    .layout { display: flex; padding-top: var(--header-h); min-height: 100vh; }
+
+    .sidebar { position: fixed; top: var(--header-h); left: 0; width: var(--sidebar-w); height: calc(100vh - var(--header-h)); background: var(--sidebar-bg); border-right: 1px solid var(--border); overflow-y: auto; padding: 28px 0 48px; }
+    .sb-section { padding: 0 14px; margin-bottom: 28px; }
+    .sb-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-t); padding: 0 8px; margin-bottom: 6px; }
+    .nav-link { display: flex; align-items: baseline; gap: 6px; padding: 5px 8px; border-radius: 5px; font-size: 13px; color: var(--text-s); text-decoration: none; transition: background 0.12s, color 0.12s; line-height: 1.4; }
+    .nav-link:hover { background: rgba(0,0,0,0.05); color: var(--text-p); }
+    .nav-link.active { background: var(--accent-lt); color: var(--accent); font-weight: 500; }
+    .nav-link .n { font-family: var(--font-mono); font-size: 11px; color: var(--text-t); flex-shrink: 0; min-width: 22px; }
+    .nav-link.active .n { color: var(--accent); opacity: 0.7; }
+    .sb-div { border: none; border-top: 1px solid var(--border); margin: 10px 14px 16px; }
+    .toc-link { display: block; padding: 3px 8px; border-radius: 4px; font-size: 12.5px; color: var(--text-s); text-decoration: none; transition: color 0.12s; line-height: 1.5; }
+    .toc-link:hover { color: var(--accent); }
+    .toc-link.here { color: var(--accent); font-weight: 500; }
+
+    .content { margin-left: var(--sidebar-w); width: calc(100% - var(--sidebar-w)); max-width: calc(var(--sidebar-w) + 800px); padding: 52px 60px 100px; }
+
+    .eyebrow { font-family: var(--font-mono); font-size: 12px; color: var(--accent); font-weight: 500; letter-spacing: 0.05em; margin-bottom: 10px; }
+    .doc-title { font-family: var(--font-serif); font-size: 36px; font-weight: 600; line-height: 1.18; color: var(--text-p); margin-bottom: 14px; }
+    .doc-sub { font-size: 17px; color: var(--text-s); line-height: 1.65; max-width: 580px; padding-bottom: 36px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+
+    .sec { margin-bottom: 56px; scroll-margin-top: calc(var(--header-h) + 20px); }
+    h2 { font-family: var(--font-serif); font-size: 23px; font-weight: 600; color: var(--text-p); display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .sn { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--text-t); background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; flex-shrink: 0; }
+    h3 { font-size: 15px; font-weight: 600; color: var(--text-p); margin: 28px 0 10px; }
+    p { margin-bottom: 14px; }
+    p:last-child { margin-bottom: 0; }
+    a { color: var(--accent); }
+    ul, ol { margin: 12px 0 14px 20px; }
+    li { margin-bottom: 7px; line-height: 1.65; }
+
+    .call { border-radius: 6px; padding: 14px 18px; border-left: 3px solid; margin: 22px 0; }
+    .call-title { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 6px; }
+    .call p { font-size: 14px; line-height: 1.65; margin: 0; }
+    .call p + p { margin-top: 8px; }
+    .call.note { background: var(--note-bg); border-color: var(--note-bd); }
+    .call.note .call-title { color: #15803D; }
+    .call.warn { background: var(--warn-bg); border-color: var(--warn-bd); }
+    .call.warn .call-title { color: #B45309; }
+    .call.rule { background: var(--rule-bg); border-color: var(--rule-bd); }
+    .call.rule .call-title { color: #BE123C; }
+    .call.info { background: var(--accent-lt); border-color: var(--accent-bd); }
+    .call.info .call-title { color: var(--accent); }
+
+    code { font-family: var(--font-mono); font-size: 13px; background: var(--code-bg); border: 1px solid var(--code-bd); border-radius: 3px; padding: 1px 5px; color: #BE185D; }
+    .cb-wrap { margin: 20px 0; }
+    .cb-label { display: inline-block; font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-t); background: var(--sidebar-bg); border: 1px solid var(--border); border-bottom: none; border-radius: 5px 5px 0 0; padding: 4px 12px; position: relative; z-index: 1; }
+    pre { background: var(--code-bg); border: 1px solid var(--code-bd); border-radius: 0 6px 6px 6px; padding: 18px 20px; overflow-x: auto; font-family: var(--font-mono); font-size: 13px; line-height: 1.65; margin: 0; color: var(--text-p); }
+    .cb-wrap pre code { background: none; border: none; padding: 0; color: inherit; font-size: inherit; }
+    .cm { color: var(--text-t); font-style: italic; }
+
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+    th { background: var(--sidebar-bg); font-weight: 600; text-align: left; padding: 9px 14px; border: 1px solid var(--border); font-size: 12px; }
+    td { padding: 9px 14px; border: 1px solid var(--border); vertical-align: top; line-height: 1.6; }
+    tr:nth-child(even) td { background: #FAFAF8; }
+
+    .dodont { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+    .do-box, .dn-box { border-radius: 6px; padding: 16px; font-size: 13.5px; line-height: 1.6; }
+    .do-box { background: var(--note-bg); border: 1px solid #BBF7D0; }
+    .dn-box { background: var(--rule-bg); border: 1px solid #FECDD3; }
+    .box-lbl { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px; }
+    .do-box .box-lbl { color: #15803D; }
+    .dn-box .box-lbl { color: #BE123C; }
+    .do-box code, .dn-box code { background: rgba(0,0,0,0.06); border-color: rgba(0,0,0,0.1); }
+    .dn-box code { color: #9F1239; }
+    .samp { display: block; margin-bottom: 8px; }
+    .samp:last-child { margin-bottom: 0; }
+
+    /* Appendix styling */
+    .appendix-header {
+      border-top: 2px solid var(--border); padding-top: 32px; margin-top: 56px;
+    }
+    .appendix-eyebrow {
+      font-family: var(--font-mono); font-size: 11px; color: var(--text-t);
+      letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="hdr-lab">Raredon Lab</span>
+  <span class="hdr-sep">·</span>
+  <span class="hdr-manual">Computational Lab Manual</span>
+  <div class="hdr-spacer"></div>
+  <span class="hdr-badge">Document 05 of 08</span>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Manual navigation">
+    <div class="sb-section">
+      <div class="sb-label">Documents</div>
+      <a href="index.html" class="nav-link"><span class="n">00</span> Overview &amp; index</a>
+      <a href="01-onboarding.html" class="nav-link"><span class="n">01</span> Onboarding</a>
+      <a href="02-computing-environment.html" class="nav-link"><span class="n">02</span> Computing environment</a>
+      <a href="03-git-workflow.html" class="nav-link"><span class="n">03</span> Git &amp; GitHub workflow</a>
+      <a href="04-coding-standards.html" class="nav-link"><span class="n">04</span> Coding standards</a>
+      <a href="05-data-management.html" class="nav-link active" aria-current="page"><span class="n">05</span> Data management</a>
+      <a href="06-ai-tools.html" class="nav-link"><span class="n">06</span> AI tools &amp; Claude</a>
+      <a href="07-ethics-teamwork.html" class="nav-link"><span class="n">07</span> Ethics &amp; teamwork</a>
+      <a href="08-publication.html" class="nav-link"><span class="n">08</span> Publication &amp; archiving</a>
+    </div>
+    <hr class="sb-div">
+    <div class="sb-section">
+      <div class="sb-label">Appendices</div>
+      <a href="appendix-a-exit-protocol.html" class="nav-link"><span class="n">A</span> Lab exit protocol</a>
+    </div>
+    <hr class="sb-div">
+    <div class="sb-section">
+      <div class="sb-label">On this page</div>
+      <a href="#principles" class="toc-link">Core principles</a>
+      <a href="#locations" class="toc-link">What goes where</a>
+      <a href="#rawdata" class="toc-link">Raw data</a>
+      <a href="#outputs" class="toc-link">Processed outputs</a>
+      <a href="#documentation" class="toc-link">Documentation</a>
+      <a href="#sharing" class="toc-link">Sharing with collaborators</a>
+      <a href="#mistakes" class="toc-link">Common mistakes</a>
+    </div>
+  </nav>
+
+  <main class="content">
+    <div class="eyebrow">Document 05</div>
+    <h1 class="doc-title">Data Management</h1>
+    <p class="doc-sub">How data is stored, organized, documented, and preserved — from acquisition through publication and beyond.</p>
+
+
+    <!-- §1 CORE PRINCIPLES -->
+    <div class="sec" id="principles">
+      <h2><span class="sn">§1</span> Core principles</h2>
+      <p>Data management in a computational lab is the counterpart to sample handling in a wet lab. The same level of care is warranted. Work done on poorly organized, incompletely documented, or irreproducible data has limited scientific value regardless of how sophisticated the analysis is. The practices in this document protect the integrity and reproducibility of the lab's science.</p>
+
+      <h3>Raw data is inviolable</h3>
+      <p>Raw data — files as they came off the instrument, from the sequencing core, or from a collaborator — must not be modified. Ever. All processing lifts from the raw source and creates copies or derivatives. The original files remain intact, on backed-up storage, indefinitely. This is what makes it possible to return to the beginning of any analysis and reconstruct exactly what was done and why.</p>
+
+      <h3>Scratch vs. permanent record</h3>
+      <p>Not all data needs to be kept forever. A useful mental distinction: <em>scratch</em> data lives on HPCs and local machines during active work. It is temporary, exploratory, and disposable. The <em>permanent record</em> lives on the Raredon Lab server. Transfer clean, well-annotated files there — important intermediates, final processed objects, and anything you would need to reconstruct your analysis years later. The server is backed up; your laptop and HPC scratch space are not permanent.</p>
+
+      <h3>Linear workflows are reproducible workflows</h3>
+      <p>Every script should load its inputs from disk and save its outputs to disk. Dependencies on the working environment of a prior script — objects that were created but never saved — produce non-linear workflows that cannot be reproduced without running all prior scripts in the same session. See <a href="04-coding-standards.html">Document 04 §7</a> for the full standard and §7 of this document for a concrete failure example.</p>
+    </div>
+
+
+    <!-- §2 WHAT GOES WHERE -->
+    <div class="sec" id="locations">
+      <h2><span class="sn">§2</span> What goes where</h2>
+      <p>The lab uses three distinct storage locations. Each has a specific role. Understanding the difference prevents data loss, duplication, and confusion when multiple people need to access the same files.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Location</th>
+            <th>Role</th>
+            <th>Access</th>
+            <th>Retention</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <strong>Lab HPCs</strong><br>
+              <span style="font-size:12px;color:var(--text-t)">McCleary / project folders</span>
+            </td>
+            <td>Temporary and active computational work. Scratch space for jobs in progress. Project folders can hold medium-term storage.</td>
+            <td>Yale network or VPN. SSH or Open OnDemand.</td>
+            <td>Must be transferred to the lab server before leaving a project or the lab. Do not treat HPC storage as an archive.</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>Raredon Lab server</strong><br>
+              <code style="font-size:11px">smb://storage.yale.edu/home/<br>RaredonLab-CC1126-MEDANE</code>
+            </td>
+            <td>Long-term archive and primary data repository. The lab's main record of all data, processed objects, and scientific outputs.</td>
+            <td>Mount via VPN. Slower to access than HPC or SharePoint.</td>
+            <td>Permanent. This is where data lives for 10+ years. Keep it organized. It is backed up.</td>
+          </tr>
+          <tr>
+            <td>
+              <strong>RaredonLab SharePoint</strong><br>
+              <a href="https://yaleedu.sharepoint.com/sites/Raredon-Lab" target="_blank" style="font-size:12px">yaleedu.sharepoint.com/<br>sites/Raredon-Lab</a>
+            </td>
+            <td>Active collaborative projects where multiple users need real-time access to shared files. Accessible via OneDrive Desktop without VPN.</td>
+            <td>Browser or OneDrive Desktop sync. No VPN required.</td>
+            <td>Active projects and documents. Not a substitute for the server as a permanent archive.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="call note">
+        <div class="call-title">Choosing between HPC and SharePoint for active work</div>
+        <p>If all collaborators on a project are working on the HPCs, the HPC project folder can serve as a shared working space. Use SharePoint when collaborators need to access files on local machines, run software that cannot run on the HPC, or work on figures and documents that require local applications. The two approaches are complementary; choose based on where the work is actually happening.</p>
+      </div>
+    </div>
+
+
+    <!-- §3 RAW DATA -->
+    <div class="sec" id="rawdata">
+      <h2><span class="sn">§3</span> Raw data</h2>
+
+      <h3>Where raw data is stored</h3>
+      <table>
+        <thead><tr><th>Data type</th><th>Who handles intake</th><th>Where it goes</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Sequencing outputs, Xenium spatial data</td>
+            <td>Lead bioinformatician</td>
+            <td>Added to the Raredon Lab data library on the lab server</td>
+          </tr>
+          <tr>
+            <td>Imaging files (microscopy, histology)</td>
+            <td>The generating lab member</td>
+            <td>Personal folders on the Raredon Lab server</td>
+          </tr>
+          <tr>
+            <td>External data (collaborator, public repository, core facility)</td>
+            <td>Lead bioinformatician</td>
+            <td>Added to the Raredon Lab data library on the lab server</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="call rule">
+        <div class="call-title">Never modify raw data</div>
+        <p>Raw data files must remain exactly as received from the instrument or source. All downstream processing creates copies or derivatives; it does not alter the originals. If you find yourself editing a raw file, stop — create a copy first and work from that.</p>
+      </div>
+
+      <h3>Labeling imaging data at acquisition</h3>
+      <p>Poor file naming at the microscope is one of the most common and most costly data management failures in this type of lab. Microscopy data can accumulate rapidly into terabytes of files that become impossible to sort through without good names. Take a few minutes at the instrument to initialize file names that uniquely identify the sample, the experiment, the date, and any other parameters you will need later. You will not regret this investment. Expert microscopists are expert archivists: they keep detailed records that allow them to find and interpret images months or years after acquisition.</p>
+      <p>Build a README or markdown file for each imaging dataset describing what was collected, under what conditions, and where the files live. This is especially important for large imaging projects where no single person may remember all the details.</p>
+    </div>
+
+
+    <!-- §4 PROCESSED OUTPUTS -->
+    <div class="sec" id="outputs">
+      <h2><span class="sn">§4</span> Processed outputs and save decisions</h2>
+
+      <h3>What to save and what to discard</h3>
+      <p>Every time a script runs, it produces outputs. Not all of them need to be kept. Too many intermediate files clutter the server, make navigation confusing, and create a false sense of progress. Too few, and you lose the ability to re-enter a pipeline midway without rerunning everything from scratch. Good judgment about save points — what the PI calls "elegant save points" — is one of the skills developed over time in this lab.</p>
+      <p>A useful test: if this file disappeared, would I have to rerun a substantial pipeline to recreate it? If yes, keep it. If it could be regenerated in minutes from a nearby upstream object, it is probably not worth the server space. Good judgment about what constitutes an elegant save point is one of the skills developed over time in computational work.</p>
+      <p>When in doubt, save. You can always delete a file later; you cannot always recreate it.</p>
+
+      <h3>Metadata changes: save as CSV, not as a new object</h3>
+      <p>One of the most common and most wasteful practices in single-cell analysis is re-saving a large data object (50+ GB) simply because its metadata has been updated: a new cell type annotation, a corrected sample label, an added QC column. The object itself has not changed — only the metadata attached to it has.</p>
+      <p>The correct practice is to save only the metadata as a CSV file, and to load both the base object and the metadata CSV at the start of any downstream script, merging them there. This approach saves an enormous amount of server space and makes the annotation history transparent and editable.</p>
+
+      <div class="dodont">
+        <div class="do-box">
+          <div class="box-lbl">✓ Efficient</div>
+          <code class="samp">saveRDS(obj, "01_AB_base-object.rds")</code>
+          <code class="samp">write.csv(obj@meta.data, "02_AB_metadata-annotated.csv")</code>
+          <code class="samp"><span style="color:var(--text-t);font-style:italic"># downstream: load obj + join metadata</span></code>
+        </div>
+        <div class="dn-box">
+          <div class="box-lbl">✗ Wasteful</div>
+          <code class="samp">saveRDS(obj, "01_AB_base-object.rds")</code>
+          <code class="samp">saveRDS(obj, "02_AB_object-annotated.rds")</code>
+          <code class="samp"><span style="color:var(--text-t);font-style:italic"># two ~50 GB files, one change</span></code>
+        </div>
+      </div>
+
+      <h3>Versioning and post-publication housekeeping</h3>
+      <p>During active development, maintain an archival record: keep intermediates and version trees that might need to be revisited. After a paper is published, do a round of computational housekeeping: discard intermediate files that became defunct, and preserve a clean, well-organized record showing the essential path from raw data to published result. The goal at publication is a pipeline that a new user could follow — linear, non-redundant, well-labeled — without extensive debugging.</p>
+
+      <p>When working through a complex pipeline, keep a README or markdown note in the data directory documenting what each major saved object contains, where it came from, and what it is used for. This navigation aid is invaluable when returning to a project after months away.</p>
+    </div>
+
+
+    <!-- §5 DOCUMENTATION -->
+    <div class="sec" id="documentation">
+      <h2><span class="sn">§5</span> Documentation</h2>
+
+      <h3>README and markdown files for data directories</h3>
+      <p>Any data directory with more than a handful of files benefits from a README or markdown file describing its contents. Include: what each major file contains, where it came from, when it was created, and what downstream scripts use it. A few sentences per file is enough. This takes minutes to write and saves hours when someone (including yourself) needs to navigate the directory later.</p>
+
+      <h3>The computational lab notebook</h3>
+      <p>A highly recommended practice, especially for new lab members: keep a daily computational lab notebook. This is simply a text file or Word document where, at the end of each working day, you record:</p>
+      <ul>
+        <li>The date</li>
+        <li>What you worked on</li>
+        <li>Key file paths and script names used or created</li>
+        <li>Decisions made and reasoning behind them</li>
+        <li>Problems encountered and how they were resolved (or not)</li>
+        <li>Open questions for the next session</li>
+      </ul>
+      <p>This document is searchable. When you need to find a file you created six months ago, or reconstruct why a particular parameter was chosen, the notebook is where you look. The investment is a few minutes per day. The payoff compounds over time, and the habit is worth building early.</p>
+
+      <div class="call note">
+        <div class="call-title">Even experienced scientists benefit</div>
+        <p>The computational lab notebook is not a practice reserved for new learners. Experienced scientists who keep one can retrace their steps, identify larger patterns in their work, and hand off projects with significantly less friction. It is one of the simplest practices with one of the highest returns.</p>
+      </div>
+    </div>
+
+
+    <!-- §6 SHARING WITH EXTERNAL COLLABORATORS -->
+    <div class="sec" id="sharing">
+      <h2><span class="sn">§6</span> Sharing data with external collaborators</h2>
+      <p>Sharing large data objects with people outside the lab is a recurring practical challenge. The best option in most cases is SharePoint or OneDrive: files can be shared as links, accessed without VPN, and do not require the collaborator to have Yale credentials for a simple download.</p>
+      <p>Before sharing any data externally, confirm with the PI that the data is appropriate to share, that any relevant data sharing agreements are in place, and that the files are clearly labeled and documented so the recipient can use them without a lengthy explanation. Provenance information — where the data came from, how it was processed — should travel with the data.</p>
+    </div>
+
+
+    <!-- §7 COMMON MISTAKES -->
+    <div class="sec" id="mistakes">
+      <h2><span class="sn">§7</span> Common mistakes to avoid</h2>
+
+      <h3>Saving too many intermediate objects</h3>
+      <p>Every iterative change to a data object does not need to be saved permanently. If you find yourself with dozens of near-duplicate files differing only in minor parameter choices, consolidate. Use good judgment about what represents a meaningful checkpoint versus a transient state. Make later users' lives easier, including your own.</p>
+
+      <h3>Re-saving large objects for metadata changes</h3>
+      <p>If only the metadata attached to a large object has changed — a new annotation column, a corrected label — save the metadata alone as a CSV. Do not save another copy of the full object. Load and merge at the start of downstream scripts. This single habit can save hundreds of gigabytes of server space across a project. See §4 for the correct pattern.</p>
+
+      <h3>Poor labeling of imaging data at acquisition</h3>
+      <p>Generic file names assigned by the microscope software ("image001.tiff", "scan_001") become impossible to interpret within weeks. Set meaningful file names at the instrument before you step away from the microscope. The few minutes this takes at acquisition saves many frustrated hours later.</p>
+
+      <h3>Accumulating microscopy data without curation</h3>
+      <p>Microscopy data can grow rapidly into terabytes. Be selective about what you acquire and retain. Think of yourself as a photographer: choose what to record thoughtfully, rather than recording everything and sorting it out later. Maintain a README for each imaging dataset so that others can understand what is there and why.</p>
+
+      <h3>Non-linear workflows</h3>
+      <p>A non-linear workflow is one where a script depends on the working environment of a previous script — on objects that were created but never saved to disk. The following is a concrete example of how this failure mode arises:</p>
+
+      <div class="cb-wrap">
+        <span class="cb-label">The non-linear dependency failure</span>
+        <pre><code><span class="cm"># Script 01: loads object, adds metadata column, but does NOT save</span>
+obj &lt;- readRDS(path_input)
+obj$new_annotation &lt;- c(...)   <span class="cm"># modifies metadata</span>
+<span class="cm"># ...analysis continues, obj never saved to disk</span>
+
+<span class="cm"># Script 02: assumes obj is already in the environment</span>
+<span class="cm"># This script will fail in a clean session</span>
+result &lt;- downstream_analysis(obj)  <span class="cm"># obj does not exist</span></code></pre>
+      </div>
+
+      <div class="cb-wrap">
+        <span class="cb-label">The correct pattern — linear and self-contained</span>
+        <pre><code><span class="cm"># Script 01: saves all outputs before finishing</span>
+obj &lt;- readRDS(path_input)
+obj$new_annotation &lt;- c(...)
+write.csv(obj@meta.data, path_metadata_out)   <span class="cm"># save metadata</span>
+saveRDS(obj, path_obj_out)                    <span class="cm"># save object if needed</span>
+
+<span class="cm"># Script 02: loads from disk in a clean environment</span>
+obj      &lt;- readRDS(path_obj_out)
+metadata &lt;- read.csv(path_metadata_out)
+result   &lt;- downstream_analysis(obj)</code></pre>
+      </div>
+
+      <p>When you notice that a script only works after running another script in the same session, stop and fix the dependency before it becomes embedded in your workflow. Catch these early — they are much harder to untangle later.</p>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  const sections = document.querySelectorAll('.sec[id]');
+  const tocLinks = document.querySelectorAll('.toc-link');
+  function updateToc() {
+    let current = '';
+    sections.forEach(sec => { if (sec.getBoundingClientRect().top < 140) current = sec.id; });
+    tocLinks.forEach(link => { link.classList.toggle('here', link.getAttribute('href') === '#' + current); });
+  }
+  window.addEventListener('scroll', updateToc, { passive: true });
+  updateToc();
+</script>
+
+</body>
+</html>
