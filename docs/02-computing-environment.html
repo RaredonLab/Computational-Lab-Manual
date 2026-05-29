@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>02 — Computing Environment | Raredon Lab Manual</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sidebar-w: 256px; --header-h: 54px;
+      --bg: #FFFFFF; --sidebar-bg: #F6F5F1; --border: #E3E1DC;
+      --text-p: #1A1917; --text-s: #5C5A56; --text-t: #9C9A96;
+      --accent: #1D4ED8; --accent-lt: #EFF6FF; --accent-bd: #BFDBFE;
+      --code-bg: #F6F5F1; --code-bd: #D8D6D0;
+      --note-bg: #F0FDF4; --note-bd: #16A34A;
+      --warn-bg: #FFFBEB; --warn-bd: #D97706;
+      --rule-bg: #FFF1F2; --rule-bd: #E11D48;
+      --font: 'IBM Plex Sans', sans-serif;
+      --font-serif: 'IBM Plex Serif', serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+    html { scroll-behavior: smooth; font-size: 15px; }
+    body { font-family: var(--font); line-height: 1.75; color: var(--text-p); background: var(--bg); }
+
+    .site-header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); background: #141210; display: flex; align-items: center; padding: 0 24px; gap: 10px; z-index: 200; }
+    .hdr-lab { font-family: var(--font-serif); font-size: 15px; font-weight: 600; color: #fff; }
+    .hdr-sep { color: rgba(255,255,255,0.25); font-size: 20px; }
+    .hdr-manual { font-size: 13px; color: rgba(255,255,255,0.55); }
+    .hdr-spacer { flex: 1; }
+    .hdr-badge { font-family: var(--font-mono); font-size: 11px; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); padding: 3px 9px; border-radius: 4px; }
+
+    .layout { display: flex; padding-top: var(--header-h); min-height: 100vh; }
+
+    .sidebar { position: fixed; top: var(--header-h); left: 0; width: var(--sidebar-w); height: calc(100vh - var(--header-h)); background: var(--sidebar-bg); border-right: 1px solid var(--border); overflow-y: auto; padding: 28px 0 48px; }
+    .sb-section { padding: 0 14px; margin-bottom: 28px; }
+    .sb-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-t); padding: 0 8px; margin-bottom: 6px; }
+    .nav-link { display: flex; align-items: baseline; gap: 6px; padding: 5px 8px; border-radius: 5px; font-size: 13px; color: var(--text-s); text-decoration: none; transition: background 0.12s, color 0.12s; line-height: 1.4; }
+    .nav-link:hover { background: rgba(0,0,0,0.05); color: var(--text-p); }
+    .nav-link.active { background: var(--accent-lt); color: var(--accent); font-weight: 500; }
+    .nav-link .n { font-family: var(--font-mono); font-size: 11px; color: var(--text-t); flex-shrink: 0; min-width: 22px; }
+    .nav-link.active .n { color: var(--accent); opacity: 0.7; }
+    .sb-div { border: none; border-top: 1px solid var(--border); margin: 10px 14px 16px; }
+    .toc-link { display: block; padding: 3px 8px; border-radius: 4px; font-size: 12.5px; color: var(--text-s); text-decoration: none; transition: color 0.12s; line-height: 1.5; }
+    .toc-link:hover { color: var(--accent); }
+    .toc-link.here { color: var(--accent); font-weight: 500; }
+
+    .content { margin-left: var(--sidebar-w); width: calc(100% - var(--sidebar-w)); max-width: calc(var(--sidebar-w) + 800px); padding: 52px 60px 100px; }
+
+    .eyebrow { font-family: var(--font-mono); font-size: 12px; color: var(--accent); font-weight: 500; letter-spacing: 0.05em; margin-bottom: 10px; }
+    .doc-title { font-family: var(--font-serif); font-size: 36px; font-weight: 600; line-height: 1.18; color: var(--text-p); margin-bottom: 14px; }
+    .doc-sub { font-size: 17px; color: var(--text-s); line-height: 1.65; max-width: 580px; padding-bottom: 36px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+
+    .sec { margin-bottom: 56px; scroll-margin-top: calc(var(--header-h) + 20px); }
+    h2 { font-family: var(--font-serif); font-size: 23px; font-weight: 600; color: var(--text-p); display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .sn { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--text-t); background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; flex-shrink: 0; }
+    h3 { font-size: 15px; font-weight: 600; color: var(--text-p); margin: 28px 0 10px; }
+    p { margin-bottom: 14px; }
+    p:last-child { margin-bottom: 0; }
+    a { color: var(--accent); }
+    ul, ol { margin: 12px 0 14px 20px; }
+    li { margin-bottom: 7px; line-height: 1.65; }
+
+    .call { border-radius: 6px; padding: 14px 18px; border-left: 3px solid; margin: 22px 0; }
+    .call-title { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 6px; }
+    .call p { font-size: 14px; line-height: 1.65; margin: 0; }
+    .call p + p { margin-top: 8px; }
+    .call.note { background: var(--note-bg); border-color: var(--note-bd); }
+    .call.note .call-title { color: #15803D; }
+    .call.warn { background: var(--warn-bg); border-color: var(--warn-bd); }
+    .call.warn .call-title { color: #B45309; }
+    .call.rule { background: var(--rule-bg); border-color: var(--rule-bd); }
+    .call.rule .call-title { color: #BE123C; }
+    .call.info { background: var(--accent-lt); border-color: var(--accent-bd); }
+    .call.info .call-title { color: var(--accent); }
+
+    code { font-family: var(--font-mono); font-size: 13px; background: var(--code-bg); border: 1px solid var(--code-bd); border-radius: 3px; padding: 1px 5px; color: #BE185D; }
+    .cb-wrap { margin: 20px 0; }
+    .cb-label { display: inline-block; font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-t); background: var(--sidebar-bg); border: 1px solid var(--border); border-bottom: none; border-radius: 5px 5px 0 0; padding: 4px 12px; position: relative; z-index: 1; }
+    pre { background: var(--code-bg); border: 1px solid var(--code-bd); border-radius: 0 6px 6px 6px; padding: 18px 20px; overflow-x: auto; font-family: var(--font-mono); font-size: 13px; line-height: 1.65; margin: 0; color: var(--text-p); }
+    .cb-wrap pre code { background: none; border: none; padding: 0; color: inherit; font-size: inherit; }
+    .cm { color: var(--text-t); font-style: italic; }
+
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+    th { background: var(--sidebar-bg); font-weight: 600; text-align: left; padding: 9px 14px; border: 1px solid var(--border); font-size: 12px; }
+    td { padding: 9px 14px; border: 1px solid var(--border); vertical-align: top; line-height: 1.6; }
+    tr:nth-child(even) td { background: #FAFAF8; }
+
+    /* Install steps */
+    .install-list { list-style: none; margin: 0; padding: 0; counter-reset: install; }
+    .install-list li {
+      counter-increment: install;
+      display: flex; gap: 16px; align-items: flex-start;
+      padding: 14px 0; border-bottom: 1px solid var(--border);
+    }
+    .install-list li:last-child { border-bottom: none; }
+    .install-num {
+      flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+      background: var(--sidebar-bg); border: 1px solid var(--border);
+      color: var(--text-t); font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+      display: flex; align-items: center; justify-content: center; margin-top: 2px;
+    }
+    .install-body { flex: 1; }
+    .install-body strong { font-weight: 600; display: block; margin-bottom: 2px; }
+    .install-body span { font-size: 13.5px; color: var(--text-s); line-height: 1.55; }
+    .install-body a { color: var(--accent); font-size: 13px; }
+
+    /* Checklist */
+    .checklist-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px;
+    }
+    .checklist-header h3 { margin: 0; }
+    .progress-wrap { display: flex; align-items: center; gap: 10px; }
+    .progress-bar-bg { width: 160px; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.3s ease; width: 0%; }
+    .progress-label { font-family: var(--font-mono); font-size: 12px; color: var(--text-t); white-space: nowrap; }
+
+    .checklist-group { margin-bottom: 28px; }
+    .checklist-group-label {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-t);
+      margin-bottom: 8px; padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .check-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 9px 12px; border-radius: 5px;
+      cursor: pointer; transition: background 0.1s;
+      user-select: none;
+    }
+    .check-item:hover { background: var(--sidebar-bg); }
+    .check-item.done { opacity: 0.55; }
+    .check-box {
+      flex-shrink: 0; width: 18px; height: 18px; border-radius: 4px;
+      border: 1.5px solid var(--border); background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 3px; transition: all 0.15s;
+    }
+    .check-item.done .check-box {
+      background: var(--accent); border-color: var(--accent);
+    }
+    .check-tick { display: none; color: white; font-size: 11px; font-weight: 700; }
+    .check-item.done .check-tick { display: block; }
+    .check-text { flex: 1; font-size: 14px; line-height: 1.55; }
+    .check-item.done .check-text { text-decoration: line-through; color: var(--text-t); }
+    .check-note { font-size: 12px; color: var(--text-t); margin-top: 2px; font-style: italic; }
+    .check-item.done .check-note { text-decoration: none; }
+
+    .all-done {
+      display: none; text-align: center; padding: 20px;
+      background: var(--note-bg); border: 1px solid var(--note-bd);
+      border-radius: 8px; margin-top: 16px;
+      font-size: 14px; color: #15803D; font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="hdr-lab">Raredon Lab</span>
+  <span class="hdr-sep">·</span>
+  <span class="hdr-manual">Computational Lab Manual</span>
+  <div class="hdr-spacer"></div>
+  <span class="hdr-badge">Document 02 of 08</span>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Manual navigation">
+    <div class="sb-section">
+      <div class="sb-label">Documents</div>
+      <a href="index.html" class="nav-link"><span class="n">00</span> Overview &amp; index</a>
+      <a href="01-onboarding.html" class="nav-link"><span class="n">01</span> Onboarding</a>
+      <a href="02-computing-environment.html" class="nav-link active" aria-current="page"><span class="n">02</span> Computing environment</a>
+      <a href="03-git-workflow.html" class="nav-link"><span class="n">03</span> Git &amp; GitHub workflow</a>
+      <a href="04-coding-standards.html" class="nav-link"><span class="n">04</span> Coding standards</a>
+      <a href="05-data-management.html" class="nav-link"><span class="n">05</span> Data management</a>
+      <a href="06-ai-tools.html" class="nav-link"><span class="n">06</span> AI tools &amp; Claude</a>
+      <a href="07-ethics-teamwork.html" class="nav-link"><span class="n">07</span> Ethics &amp; teamwork</a>
+      <a href="08-publication.html" class="nav-link"><span class="n">08</span> Publication &amp; archiving</a>
+    </div>
+    <hr class="sb-div">
+    <div class="sb-section">
+      <div class="sb-label">Appendices</div>
+      <a href="appendix-a-exit-protocol.html" class="nav-link"><span class="n">A</span> Lab exit protocol</a>
+    </div>
+    <hr class="sb-div">
+    <div class="sb-section">
+      <div class="sb-label">On this page</div>
+      <a href="#hardware" class="toc-link">Hardware</a>
+      <a href="#storage" class="toc-link">Network storage &amp; HPC</a>
+      <a href="#software" class="toc-link">Software installation</a>
+      <a href="#r-config" class="toc-link">R configuration</a>
+      <a href="#r-packages" class="toc-link">R packages</a>
+      <a href="#checklist" class="toc-link">Setup checklist</a>
+    </div>
+  </nav>
+
+  <main class="content">
+    <div class="eyebrow">Document 02</div>
+    <h1 class="doc-title">Computing Environment</h1>
+    <p class="doc-sub">Hardware requirements, network access, software installation, and a setup checklist to complete in your first week.</p>
+
+
+    <!-- §1 HARDWARE -->
+    <div class="sec" id="hardware">
+      <h2><span class="sn">§1</span> Hardware</h2>
+      <p>Computational work in this lab ranges from lightweight scripting to processing single-cell datasets that require 100 GB or more of working memory. A well-configured local machine handles most day-to-day work; the HPC handles the rest. The two are complementary, and knowing which to use for a given task is part of working efficiently.</p>
+
+      <h3>Minimum local specs</h3>
+      <table>
+        <thead><tr><th>Component</th><th>Minimum</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>RAM</td>
+            <td>16 GB</td>
+            <td>If your machine has less, most analysis work should be done on the HPC rather than locally.</td>
+          </tr>
+          <tr>
+            <td>Free storage</td>
+            <td>100 GB</td>
+            <td>On Macs with Apple Silicon, the SSD is used as RAM swap, so additional free space directly extends effective memory for large R workflows.</td>
+          </tr>
+          <tr>
+            <td>Operating system</td>
+            <td>Any</td>
+            <td>macOS, Windows, and Linux are all supported. The software stack below works across all three.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Lab workstations</h3>
+      <p>A limited number of shared lab workstations are available on a first-come, first-served basis. If a workstation is available and your personal machine does not meet the minimum specs, request access through the PI. If no workstation is available and local hardware is insufficient, HPC access is the path forward.</p>
+
+      <div class="call note">
+        <div class="call-title">When to use the HPC</div>
+        <p>Move work to the HPC when a job requires more than your local machine can provide: large object manipulation, multi-sample batch processing, long-running jobs, or anything requiring more than 32 GB of working RAM. The HPC is not a fallback — for large-scale analysis, it is the right tool.</p>
+      </div>
+    </div>
+
+
+    <!-- §2 NETWORK STORAGE AND HPC -->
+    <div class="sec" id="storage">
+      <h2><span class="sn">§2</span> Network storage and HPC access</h2>
+      <p>The lab uses three distinct locations for shared data storage. Know which one holds the data you need before you start a project.</p>
+
+      <table>
+        <thead><tr><th>Location</th><th>What it holds</th><th>How to access</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Raredon Lab server</strong><br><code style="font-size:11px">smb://storage.yale.edu/home/<br>RaredonLab-CC1126-MEDANE</code></td>
+            <td>Primary shared storage for large data objects, raw data, and processed outputs</td>
+            <td>Mount via Finder (Mac) or File Explorer (Windows) on Yale network or VPN. Ask a senior lab member for mount instructions on first use.</td>
+          </tr>
+          <tr>
+            <td><strong>RaredonLab SharePoint</strong><br><a href="https://yaleedu.sharepoint.com/sites/Raredon-Lab" target="_blank" style="font-size:12px">yaleedu.sharepoint.com/sites/Raredon-Lab</a></td>
+            <td>Documents, protocols, lab administrative files, and shared reference materials</td>
+            <td>Access via browser or add to OneDrive Desktop for local file sync (see §3, step 16).</td>
+          </tr>
+          <tr>
+            <td><strong>McCleary HPC</strong><br><span style="font-size:12px;color:var(--text-t)">Yale Center for Research Computing</span></td>
+            <td>High-memory and long-running compute jobs; large scratch storage</td>
+            <td>Request an account via YCRC (see below). Connect via SSH or Open OnDemand.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Getting a McCleary account</h3>
+      <ol>
+        <li>Navigate to the <a href="https://research.computing.yale.edu" target="_blank">Yale Center for Research Computing</a> account request portal.</li>
+        <li>Submit a new account request, listing Raredon as your PI.</li>
+        <li>The PI will receive an approval request and confirm it. Account provisioning typically takes 1–2 business days.</li>
+        <li>Once your account is active, test access via SSH: <code>ssh netid@mccleary.hpc.yale.edu</code>, or log in via <a href="https://ood.hpc.yale.edu" target="_blank">Open OnDemand</a> in a browser.</li>
+      </ol>
+
+      <div class="call info">
+        <div class="call-title">Yale VPN required off-campus</div>
+        <p>The lab server and HPC are only accessible on the Yale network or through the Yale VPN. Install Cisco AnyConnect (step 15 in §3) and confirm VPN access before you need it for the first time.</p>
+      </div>
+    </div>
+
+
+    <!-- §3 SOFTWARE INSTALLATION -->
+    <div class="sec" id="software">
+      <h2><span class="sn">§3</span> Software installation</h2>
+      <p>Install the following in order. Some items depend on others being present first (R before your IDE, Git before GitHub Desktop). Items marked with a download link have a recommended source; for the rest, use your platform's standard installer or package manager.</p>
+
+      <ul class="install-list">
+        <li>
+          <span class="install-num">1</span>
+          <div class="install-body">
+            <strong>R</strong>
+            <span>The core language for analysis and visualization. Install the latest stable release. <a href="https://cran.r-project.org" target="_blank">cran.r-project.org</a></span>
+          </div>
+        </li>
+        <li>
+          <span class="install-num">2</span>
+          <div class="install-body">
+            <strong>Python</strong>
+            <span>Required for some analysis tools and HPC workflows. Install the latest stable release via <a href="https://www.python.org/downloads/" target="_blank">python.org</a> or Anaconda.</span>
+          </div>
+        </li>
+        <li>
+          <span class="install-num">3</span>
+          <div class="install-body">
+            <strong>RStudio or Positron</strong>
+            <span>IDE for R development. Positron (Posit's newer IDE) is preferred but RStudio remains fully supported — use whichever you prefer. <a href="https://positron.posit.co" target="_blank">Positron</a> · <a href="https://posit.co/products/open-source/rstudio/" target="_blank">RStudio</a></span>
+          </div>
+        </li>
+        <li>
+          <span class="install-num">4</span>
+          <div class="install-body">
+            <strong>Git</strong>
+            <span>Version control system. Required before installing GitHub Desktop. <a href="https://git-scm.com/downloads" target="_blank">git-scm.com</a>. After installing, configure your identity: see <a href="03-git-workflow.html">Document 03 §2</a>.</span>
+          </div>
+        </li>
+        <li>
+          <span class="install-num">5</span>
+          <div class="install-body">
+            <strong>GitHub Desktop</strong>
+            <span>Graphical interface for Git. Recommended for new users; experienced users may work from the command line instead. <a href="https://desktop.github.com" target="_blank">desktop.github.com</a></span>
+          </div>
+        </li>
+        <li>
+          <span class="install-num">6</span>
+          <div class="install-body">
+            <strong>Claude</strong>
+            <span>AI assistant for coding, writing, and troubleshooting. Create an account at <a href="https://claude.ai" target="_blank">claude.ai</a> or install the desktop app. See <a href="06-ai-tools.html">Document 06</a> for how to use it in lab workflows.</span>
+          </div>
+        </li>
+        <li>
+          <span class="install-num">7</span>
+          <div class="install-body">
+            <strong>Adobe Illustrator</strong>
+            <span>Vector graphics editor for figure preparation and publication-quality layouts. Available through Yale software licensing.</span>
+          </div>
+        </li>
+        <li>
+          <span class="install-num">8</span>
+          <div class="install-body">
+            <strong>EndNote or Zotero</strong>
+            <span>Reference management. EndNote is available through Yale licensing; Zotero is free and open-source. Either is acceptable. <a href="https://www.zotero.org" target="_blank">Zotero</a></span>
+          </div>
+        </li>
+        <li>
+          <span class="install-num">9</span>
+          <div class="install-body">
+            <strong>Microsoft Office</strong>
+            <span>Word, Excel, PowerPoint, Outlook. Available through Yale. Outlook is required for calendar and email; install and configure it before your first week is out.</span>
+          </div>
+        </li>
+        <li>
+          <span class="install-num">10</span>
+          <div class="install-body">
+            <strong>Slack</strong>
+            <span>Primary channel for lab communication. Install the desktop app, sign in to the Raredon Lab workspace, and join all channels by default. <a href="https://slack.com/downloads" target="_blank">slack.com/downloads</a></span>
+          </div>
+        </li>
+        <li>
+          <span class="install-num">11</span>
+          <div class="install-body">
+            <strong>XeniumExplorer</strong>
+            <span>10x Genomics tool for visualizing Xenium spatial transcriptomics data. <a href="https://www.10xgenomics.com/products/xenium-explorer" target="_blank">10xgenomics.com</a></span>
+          </div>
+        </li>
+        <li>
+          <span class="install-num">12</span>
+          <div class="install-body">
+            <strong>Docker</strong>
+            <span>Container platform used for reproducible computational environments and some pipeline tools. <a href="https://www.docker.com/products/docker-desktop/" target="_blank">docker.com</a></span>
+          </div>
+        </li>
+        <li>
+          <span class="install-num">13</span>
+          <div class="install-body">
+            <strong>QuPath</strong>
+            <span>Open-source image analysis platform for pathology and spatial biology. <a href="https://qupath.github.io" target="_blank">qupath.github.io</a></span>
+          </div>
+        </li>
+        <li>
+          <span class="install-num">14</span>
+          <div class="install-body">
+            <strong>FIJI (ImageJ)</strong>
+            <span>Image processing and analysis. <a href="https://imagej.net/software/fiji/" target="_blank">imagej.net/software/fiji</a></span>
+          </div>
+        </li>
+        <li>
+          <span class="install-num">15</span>
+          <div class="install-body">
+            <strong>Cisco AnyConnect (Yale VPN)</strong>
+            <span>Required for accessing the lab server and HPC from off-campus. Install and test before you need it. Available from Yale IT. <a href="https://software.yale.edu" target="_blank">software.yale.edu</a></span>
+          </div>
+        </li>
+        <li>
+          <span class="install-num">16</span>
+          <div class="install-body">
+            <strong>OneDrive Desktop</strong>
+            <span>Install the Microsoft OneDrive desktop client, then add the RaredonLab SharePoint as a synced library. This makes SharePoint files accessible from Finder or File Explorer like a local folder. Instructions: open SharePoint in a browser → click "Sync" in the document library toolbar.</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+
+    <!-- §4 R CONFIGURATION FOR LARGE DATA -->
+    <div class="sec" id="r-config">
+      <h2><span class="sn">§4</span> R configuration for large data</h2>
+      <p>Standard R installations are not configured to handle the memory demands of large single-cell or spatial datasets. Some analysis workflows in this lab require 50–100+ GB of working RAM. The configuration steps below should be applied on every machine where you run R.</p>
+
+      <h3>Setting memory options</h3>
+      <p>Add the following to your <code>.Rprofile</code> file (located in your home directory, or create it if it does not exist). These settings take effect every time R starts.</p>
+
+      <div class="cb-wrap">
+        <span class="cb-label">~/.Rprofile</span>
+        <pre><code><span class="cm"># Increase default memory for large object operations</span>
+options(warn = 1)                          <span class="cm"># surface warnings immediately</span>
+options(future.globals.maxSize = 8 * 1024^3) <span class="cm"># 8 GB for parallel globals</span>
+
+<span class="cm"># On Windows only: raise the memory limit</span>
+if (.Platform$OS.type == "windows") {
+  memory.limit(size = 64000)             <span class="cm"># 64 GB, adjust to your machine</span>
+}</code></pre>
+      </div>
+
+      <h3>Monitoring memory usage</h3>
+      <p>To check how much memory an R session is currently using, install the <code>lobstr</code> package and call <code>lobstr::mem_used()</code>. To check the size of a specific object, use <code>lobstr::obj_size(your_object)</code>. Knowing the memory footprint of your objects before running expensive operations prevents crashes mid-analysis.</p>
+
+      <h3>On-disk representation for very large objects</h3>
+      <p>For single-cell objects that exceed available RAM, the <code>BPCells</code> package allows count matrices to be stored on disk and accessed without loading them fully into memory. This is particularly useful for merged multi-sample datasets. Ask a senior lab member if you are unsure whether your workflow requires this.</p>
+
+      <h3>Moving large jobs to the HPC</h3>
+      <p>When a workflow genuinely exceeds local memory, move it to McCleary. Request an interactive session with sufficient memory for exploratory work, or submit a batch job for long-running pipelines.</p>
+
+      <div class="cb-wrap">
+        <span class="cb-label">McCleary — interactive session with 128 GB RAM</span>
+        <pre><code>srun --pty --mem=128G --cpus-per-task=4 bash</code></pre>
+      </div>
+
+      <div class="cb-wrap">
+        <span class="cb-label">McCleary — SLURM batch job header</span>
+        <pre><code>#!/bin/bash
+#SBATCH --job-name=my_analysis
+#SBATCH --mem=128G
+#SBATCH --cpus-per-task=8
+#SBATCH --time=12:00:00
+#SBATCH --output=logs/%j.out
+
+Rscript scripts/01_20250301_AB_preprocessing.R</code></pre>
+      </div>
+    </div>
+
+
+    <!-- §5 R PACKAGES -->
+    <div class="sec" id="r-packages">
+      <h2><span class="sn">§5</span> R packages</h2>
+
+      <h3>Core packages</h3>
+      <p>The packages listed in <a href="01-onboarding.html">Document 01 §5</a> are the starting point. Install them from CRAN in the usual way. For packages that require compilation, ensure you have the appropriate build tools installed for your OS (Xcode Command Line Tools on Mac, Rtools on Windows).</p>
+
+      <h3>Lab GitHub packages</h3>
+      <p>Several lab packages are hosted on the RaredonLab GitHub organization, including NICHESv2, which is essential for cell-to-cell communication analysis. Some of these repositories are private. To access them:</p>
+      <ol>
+        <li>Request collaborator access on the RaredonLab GitHub organization through the PI or a senior lab member.</li>
+        <li>Once added, fork and clone the relevant repositories following the workflow in <a href="03-git-workflow.html">Document 03</a>.</li>
+        <li>Install the package locally from your clone using <code>devtools::install_local()</code>, or install directly from GitHub using <code>devtools::install_github()</code> once you have access.</li>
+      </ol>
+
+      <div class="cb-wrap">
+        <span class="cb-label">Installing a package from a local GitHub clone</span>
+        <pre><code><span class="cm"># From the root directory of the cloned repository</span>
+devtools::install_local(<span class="cs">"."</span>)
+
+<span class="cm"># Or directly from GitHub (requires auth for private repos)</span>
+devtools::install_github(<span class="cs">"msraredon/NICHES"</span>)</code></pre>
+      </div>
+
+      <h3>Package management with renv</h3>
+      <p>For projects where reproducibility of the exact package environment matters — particularly anything destined for publication — <code>renv</code> is the recommended tool. It records the exact versions of all packages used in a project and allows others to restore that environment exactly.</p>
+
+      <div class="cb-wrap">
+        <span class="cb-label">Basic renv workflow</span>
+        <pre><code><span class="cm"># Initialize renv in a project (run once, from the project root)</span>
+renv::init()
+
+<span class="cm"># After installing or updating packages, snapshot the state</span>
+renv::snapshot()
+
+<span class="cm"># To restore a recorded environment (e.g., when someone clones your repo)</span>
+renv::restore()</code></pre>
+      </div>
+
+      <p>The <code>renv.lock</code> file generated by <code>renv::snapshot()</code> should be committed to Git. The <code>renv/</code> library directory itself should be added to <code>.gitignore</code> — it is large and can be reconstructed from the lockfile. See the <a href="https://rstudio.github.io/renv/" target="_blank">renv documentation</a> for full details.</p>
+
+      <div class="call note">
+        <div class="call-title">renv and the lab's .gitignore</div>
+        <p>The standard lab <code>.gitignore</code> in <a href="03-git-workflow.html">Document 03</a> does not include renv entries by default. If you initialize renv in a project, add <code>renv/library/</code> and <code>renv/staging/</code> to the project's <code>.gitignore</code>, and commit the <code>renv.lock</code> file.</p>
+      </div>
+    </div>
+
+
+    <!-- §6 SETUP CHECKLIST -->
+    <div class="sec" id="checklist">
+      <h2><span class="sn">§6</span> Setup checklist</h2>
+      <p>Work through this checklist during your first week. Click each item to mark it complete. Review the completed checklist with the PI at your second 1:1.</p>
+
+      <div class="checklist-header">
+        <h3 style="font-size:15px;font-weight:600;">Progress</h3>
+        <div class="progress-wrap">
+          <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressBar"></div></div>
+          <span class="progress-label" id="progressLabel">0 / 27</span>
+        </div>
+      </div>
+
+      <div class="checklist-group">
+        <div class="checklist-group-label">Hardware and access</div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">Local machine meets minimum specs (16 GB RAM, 100 GB free storage) OR lab workstation assigned OR HPC access confirmed as primary workspace</div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">Yale VPN (Cisco AnyConnect) installed and tested</div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">Raredon Lab server mounted and accessible
+            <div class="check-note">smb://storage.yale.edu/home/RaredonLab-CC1126-MEDANE</div>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">RaredonLab SharePoint access confirmed
+            <div class="check-note">yaleedu.sharepoint.com/sites/Raredon-Lab</div>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">McCleary HPC account requested (if HPC access is needed)
+            <div class="check-note">research.computing.yale.edu — list Raredon as PI</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="checklist-group">
+        <div class="checklist-group-label">Software installation</div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">R installed (latest stable)</div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">Python installed (latest stable)</div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">RStudio or Positron installed</div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">Git installed and identity configured
+            <div class="check-note">git config --global user.name / user.email — see Document 03 §2</div>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">GitHub Desktop installed</div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">Claude account created and app or browser access confirmed</div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">Adobe Illustrator installed</div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">EndNote or Zotero installed</div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">Microsoft Office installed and Outlook configured</div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">Slack installed, signed in, and all channels joined</div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">XeniumExplorer installed</div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">Docker installed</div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">QuPath installed</div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">FIJI installed</div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">OneDrive Desktop installed and RaredonLab SharePoint synced as a local library</div>
+        </div>
+      </div>
+
+      <div class="checklist-group">
+        <div class="checklist-group-label">R configuration and packages</div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">R memory options configured in <code>~/.Rprofile</code>
+            <div class="check-note">See §4 of this document</div>
+          </div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">Core R packages installed (ggplot2, dplyr, Seurat, sf, cowplot, ComplexHeatmap, and others from Document 01 §5)</div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">Added as collaborator on RaredonLab GitHub organization</div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">NICHESv2 forked, cloned, and installed successfully</div>
+        </div>
+      </div>
+
+      <div class="checklist-group">
+        <div class="checklist-group-label">Onboarding steps</div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">This manual read front to back</div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">Recurring weekly 1:1 scheduled with PI</div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">Yale Outlook calendar configured and lab meeting invites accepted</div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">Setup meeting completed with senior computational lab member</div>
+        </div>
+        <div class="check-item" onclick="toggle(this)">
+          <div class="check-box"><span class="check-tick">✓</span></div>
+          <div class="check-text">This checklist reviewed with PI at second 1:1</div>
+        </div>
+      </div>
+
+      <div class="all-done" id="allDone">
+        All items complete. Review this checklist with the PI at your next 1:1.
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  const TOTAL = document.querySelectorAll('.check-item').length;
+  document.getElementById('progressLabel').textContent = `0 / ${TOTAL}`;
+
+  function toggle(el) {
+    el.classList.toggle('done');
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const done = document.querySelectorAll('.check-item.done').length;
+    const pct = Math.round((done / TOTAL) * 100);
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = `${done} / ${TOTAL}`;
+    document.getElementById('allDone').style.display = done === TOTAL ? 'block' : 'none';
+  }
+
+  // Scrollspy
+  const sections = document.querySelectorAll('.sec[id]');
+  const tocLinks = document.querySelectorAll('.toc-link');
+  function updateToc() {
+    let current = '';
+    sections.forEach(sec => { if (sec.getBoundingClientRect().top < 140) current = sec.id; });
+    tocLinks.forEach(link => { link.classList.toggle('here', link.getAttribute('href') === '#' + current); });
+  }
+  window.addEventListener('scroll', updateToc, { passive: true });
+  updateToc();
+</script>
+
+</body>
+</html>
