@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>06 — AI Tools &amp; Claude | Raredon Lab Manual</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sidebar-w: 256px; --header-h: 54px;
+      --bg: #FFFFFF; --sidebar-bg: #F6F5F1; --border: #E3E1DC;
+      --text-p: #1A1917; --text-s: #5C5A56; --text-t: #9C9A96;
+      --accent: #1D4ED8; --accent-lt: #EFF6FF; --accent-bd: #BFDBFE;
+      --code-bg: #F6F5F1; --code-bd: #D8D6D0;
+      --note-bg: #F0FDF4; --note-bd: #16A34A;
+      --warn-bg: #FFFBEB; --warn-bd: #D97706;
+      --rule-bg: #FFF1F2; --rule-bd: #E11D48;
+      --font: 'IBM Plex Sans', sans-serif;
+      --font-serif: 'IBM Plex Serif', serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+    html { scroll-behavior: smooth; font-size: 15px; }
+    body { font-family: var(--font); line-height: 1.75; color: var(--text-p); background: var(--bg); }
+
+    .site-header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); background: #141210; display: flex; align-items: center; padding: 0 24px; gap: 10px; z-index: 200; }
+    .hdr-lab { font-family: var(--font-serif); font-size: 15px; font-weight: 600; color: #fff; }
+    .hdr-sep { color: rgba(255,255,255,0.25); font-size: 20px; }
+    .hdr-manual { font-size: 13px; color: rgba(255,255,255,0.55); }
+    .hdr-spacer { flex: 1; }
+    .hdr-badge { font-family: var(--font-mono); font-size: 11px; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); padding: 3px 9px; border-radius: 4px; }
+
+    .layout { display: flex; padding-top: var(--header-h); min-height: 100vh; }
+
+    .sidebar { position: fixed; top: var(--header-h); left: 0; width: var(--sidebar-w); height: calc(100vh - var(--header-h)); background: var(--sidebar-bg); border-right: 1px solid var(--border); overflow-y: auto; padding: 28px 0 48px; }
+    .sb-section { padding: 0 14px; margin-bottom: 28px; }
+    .sb-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-t); padding: 0 8px; margin-bottom: 6px; }
+    .nav-link { display: flex; align-items: baseline; gap: 6px; padding: 5px 8px; border-radius: 5px; font-size: 13px; color: var(--text-s); text-decoration: none; transition: background 0.12s, color 0.12s; line-height: 1.4; }
+    .nav-link:hover { background: rgba(0,0,0,0.05); color: var(--text-p); }
+    .nav-link.active { background: var(--accent-lt); color: var(--accent); font-weight: 500; }
+    .nav-link .n { font-family: var(--font-mono); font-size: 11px; color: var(--text-t); flex-shrink: 0; min-width: 22px; }
+    .nav-link.active .n { color: var(--accent); opacity: 0.7; }
+    .sb-div { border: none; border-top: 1px solid var(--border); margin: 10px 14px 16px; }
+    .toc-link { display: block; padding: 3px 8px; border-radius: 4px; font-size: 12.5px; color: var(--text-s); text-decoration: none; transition: color 0.12s; line-height: 1.5; }
+    .toc-link:hover { color: var(--accent); }
+    .toc-link.here { color: var(--accent); font-weight: 500; }
+
+    .content { margin-left: var(--sidebar-w); width: calc(100% - var(--sidebar-w)); max-width: calc(var(--sidebar-w) + 800px); padding: 52px 60px 100px; }
+
+    .eyebrow { font-family: var(--font-mono); font-size: 12px; color: var(--accent); font-weight: 500; letter-spacing: 0.05em; margin-bottom: 10px; }
+    .doc-title { font-family: var(--font-serif); font-size: 36px; font-weight: 600; line-height: 1.18; color: var(--text-p); margin-bottom: 14px; }
+    .doc-sub { font-size: 17px; color: var(--text-s); line-height: 1.65; max-width: 580px; padding-bottom: 36px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+
+    .sec { margin-bottom: 56px; scroll-margin-top: calc(var(--header-h) + 20px); }
+    h2 { font-family: var(--font-serif); font-size: 23px; font-weight: 600; color: var(--text-p); display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .sn { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--text-t); background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; flex-shrink: 0; }
+    h3 { font-size: 15px; font-weight: 600; color: var(--text-p); margin: 28px 0 10px; }
+    p { margin-bottom: 14px; }
+    p:last-child { margin-bottom: 0; }
+    a { color: var(--accent); }
+    ul, ol { margin: 12px 0 14px 20px; }
+    li { margin-bottom: 7px; line-height: 1.65; }
+
+    .call { border-radius: 6px; padding: 14px 18px; border-left: 3px solid; margin: 22px 0; }
+    .call-title { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 6px; }
+    .call p { font-size: 14px; line-height: 1.65; margin: 0; }
+    .call p + p { margin-top: 8px; }
+    .call.note { background: var(--note-bg); border-color: var(--note-bd); }
+    .call.note .call-title { color: #15803D; }
+    .call.warn { background: var(--warn-bg); border-color: var(--warn-bd); }
+    .call.warn .call-title { color: #B45309; }
+    .call.rule { background: var(--rule-bg); border-color: var(--rule-bd); }
+    .call.rule .call-title { color: #BE123C; }
+    .call.info { background: var(--accent-lt); border-color: var(--accent-bd); }
+    .call.info .call-title { color: var(--accent); }
+
+    code { font-family: var(--font-mono); font-size: 13px; background: var(--code-bg); border: 1px solid var(--code-bd); border-radius: 3px; padding: 1px 5px; color: #BE185D; }
+    .cb-wrap { margin: 20px 0; }
+    .cb-label { display: inline-block; font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-t); background: var(--sidebar-bg); border: 1px solid var(--border); border-bottom: none; border-radius: 5px 5px 0 0; padding: 4px 12px; position: relative; z-index: 1; }
+    pre { background: var(--code-bg); border: 1px solid var(--code-bd); border-radius: 0 6px 6px 6px; padding: 18px 20px; overflow-x: auto; font-family: var(--font-mono); font-size: 13px; line-height: 1.65; margin: 0; color: var(--text-p); }
+    .cb-wrap pre code { background: none; border: none; padding: 0; color: inherit; font-size: inherit; }
+    .cm { color: var(--text-t); font-style: italic; }
+    .ck { color: #7C3AED; }
+    .cs { color: #15803D; }
+
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+    th { background: var(--sidebar-bg); font-weight: 600; text-align: left; padding: 9px 14px; border: 1px solid var(--border); font-size: 12px; }
+    td { padding: 9px 14px; border: 1px solid var(--border); vertical-align: top; line-height: 1.6; }
+    tr:nth-child(even) td { background: #FAFAF8; }
+
+    .evolving-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-mono); font-size: 11px;
+      background: var(--warn-bg); border: 1px solid var(--warn-bd);
+      color: #B45309; border-radius: 4px;
+      padding: 3px 10px; margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="hdr-lab">Raredon Lab</span>
+  <span class="hdr-sep">·</span>
+  <span class="hdr-manual">Computational Lab Manual</span>
+  <div class="hdr-spacer"></div>
+  <span class="hdr-badge">Document 06 of 08</span>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Manual navigation">
+    <div class="sb-section">
+      <div class="sb-label">Documents</div>
+      <a href="index.html" class="nav-link"><span class="n">00</span> Overview &amp; index</a>
+      <a href="01-onboarding.html" class="nav-link"><span class="n">01</span> Onboarding</a>
+      <a href="02-computing-environment.html" class="nav-link"><span class="n">02</span> Computing environment</a>
+      <a href="03-git-workflow.html" class="nav-link"><span class="n">03</span> Git &amp; GitHub workflow</a>
+      <a href="04-coding-standards.html" class="nav-link"><span class="n">04</span> Coding standards</a>
+      <a href="05-data-management.html" class="nav-link"><span class="n">05</span> Data management</a>
+      <a href="06-ai-tools.html" class="nav-link active" aria-current="page"><span class="n">06</span> AI tools &amp; Claude</a>
+      <a href="07-ethics-teamwork.html" class="nav-link"><span class="n">07</span> Ethics &amp; teamwork</a>
+      <a href="08-publication.html" class="nav-link"><span class="n">08</span> Publication &amp; archiving</a>
+    </div>
+    <hr class="sb-div">
+    <div class="sb-section">
+      <div class="sb-label">Appendices</div>
+      <a href="appendix-a-exit-protocol.html" class="nav-link"><span class="n">A</span> Lab exit protocol</a>
+    </div>
+    <hr class="sb-div">
+    <div class="sb-section">
+      <div class="sb-label">On this page</div>
+      <a href="#philosophy" class="toc-link">How to think about AI</a>
+      <a href="#limits" class="toc-link">What AI is not for</a>
+      <a href="#session" class="toc-link">Starting a Claude session</a>
+      <a href="#claudemd" class="toc-link">CLAUDE.md files</a>
+      <a href="#skills" class="toc-link">Claude Skills files</a>
+      <a href="#prompting" class="toc-link">Prompting effectively</a>
+      <a href="#limitations" class="toc-link">Knowing AI's limits</a>
+      <a href="#citations" class="toc-link">Citation integrity</a>
+      <a href="#attribution" class="toc-link">Attribution standards</a>
+      <a href="#policy" class="toc-link">Yale policies</a>
+      <a href="#optout" class="toc-link">A note on opting out</a>
+    </div>
+  </nav>
+
+  <main class="content">
+    <div class="eyebrow">Document 06</div>
+    <h1 class="doc-title">AI Tools &amp; Claude</h1>
+    <p class="doc-sub">How to use AI effectively, honestly, and without losing your own judgment.</p>
+
+    <div class="evolving-badge">⚠ This document will be updated as the technology evolves. Check back periodically.</div>
+
+
+    <!-- §1 HOW TO THINK ABOUT AI -->
+    <div class="sec" id="philosophy">
+      <h2><span class="sn">§1</span> How to think about AI tools</h2>
+      <p>Before AI, working with computers required learning to write in specific formal languages: R, Python, bash. The human had to translate their intent into syntax the machine could execute. AI has changed this interface. You can now describe what you want in plain language, and an AI model will produce, edit, test, and in some cases run the corresponding code. The computation still happens on your hardware; the translation layer has simply become conversational.</p>
+      <p>This is a meaningful shift. It lowers the barrier to producing complex code and makes certain tasks far faster. It also carries a real risk: if you rely on AI to write all your code, you may stop learning to read and write it yourself. This is a personal choice, and the tradeoffs are yours to navigate. But you should navigate them consciously. There will be moments — debugging a subtle error, evaluating whether an AI-generated function is actually doing what you think it is, reading someone else's code — where the absence of a working mental model of the language will handicap you. Recognize those moments when they arrive, and decide how much de-skilling you are willing to accept.</p>
+      <p>AI is a tool. Like any tool, its value depends entirely on how clearly you understand what you are trying to do before you pick it up.</p>
+    </div>
+
+
+    <!-- §2 WHAT AI IS NOT FOR -->
+    <div class="sec" id="limits">
+      <h2><span class="sn">§2</span> What AI is not for</h2>
+      <p>Nobody can outsource thinking.</p>
+      <p>Reading and writing scientific papers is something this lab reserves for human beings. Reading and writing are forms of thinking. If you outsource them to AI, you will make yourself ignorant — and you will not know it until you have missed many opportunities. Nobody can save you from this choice.</p>
+      <p>Understanding your own data is not something AI can do for you. If you cannot describe your data structure clearly and specifically, you do not yet understand it. The work of understanding comes before you involve AI in any analysis. A capable AI given a problem it has not been set up to understand will produce confident, fluent, plausible-sounding output that may be entirely wrong. If neither you nor the AI understand the problem, you will spend time and money producing copious output that is not useful.</p>
+      <p>The thinking comes before the prompt.</p>
+
+      <div class="call rule">
+        <div class="call-title">Lab standard — reading and writing</div>
+        <p>Reading scientific papers and writing scientific papers — including methods sections, results, discussion, and figure captions — is done by human authors in this lab. Grant text may be drafted with AI assistance and then revised by the author. AI-generated prose may not be submitted without substantial human revision and review. See §9 for the full attribution standard.</p>
+      </div>
+    </div>
+
+
+    <!-- §3 STARTING A CLAUDE SESSION -->
+    <div class="sec" id="session">
+      <h2><span class="sn">§3</span> Starting a Claude session for lab work</h2>
+      <p>The most effective Claude sessions begin with context, not commands. Before asking Claude to do anything, tell it what it needs to know. For code work in a repository, this means working within a local clone of your personal fork and providing Claude with the following at the start of the session:</p>
+      <ul>
+        <li><strong>The goals of the project:</strong> what the repository is trying to accomplish scientifically</li>
+        <li><strong>Open questions:</strong> what is unresolved or actively being worked on</li>
+        <li><strong>The current task:</strong> specifically what you want to accomplish in this session</li>
+        <li><strong>Stylistic preferences:</strong> professional R code, well-annotated scripts and functions, Roxygen documentation for any functions written, a demo script for every new function showing how to use it</li>
+      </ul>
+      <p>If a <code>CLAUDE.md</code> file exists in the repository root, load it as context at the start of the session. It should contain most of this information already. See §4 for how to write and maintain one.</p>
+      <p>Claude is currently more capable than other available AI tools at software development tasks, and is the recommended tool for code work in this lab.</p>
+    </div>
+
+
+    <!-- §4 CLAUDE.MD FILES -->
+    <div class="sec" id="claudemd">
+      <h2><span class="sn">§4</span> CLAUDE.md files</h2>
+      <p>Every Raredon Lab repository should contain a <code>CLAUDE.md</code> file in the root directory. This file is the primary mechanism for giving Claude persistent, project-specific context across sessions and across lab members.</p>
+      <p>When different lab members each work with Claude from their own personal fork, their Claude sessions will naturally develop slightly different understandings of the project. A shared <code>CLAUDE.md</code> in the origin repository counteracts this: it tells every team member's Claude the same things about the project's structure, goals, conventions, and current state, so that different forks and different users can work with a consistent AI collaborator.</p>
+
+      <h3>What belongs in a CLAUDE.md</h3>
+      <p>Keep the file focused. Claude can only reliably follow a limited number of instructions at once, and a <code>CLAUDE.md</code> that tries to specify everything will be partially ignored. Prioritize information Claude cannot infer from reading the code itself.</p>
+      <table>
+        <thead><tr><th>Category</th><th>What to include</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>What</strong></td>
+            <td>Project purpose, scientific goals, the primary data types involved, key objects and their structure</td>
+          </tr>
+          <tr>
+            <td><strong>How</strong></td>
+            <td>Directory structure, naming conventions, coding style preferences, how functions should be documented, how to run or test code in this repo</td>
+          </tr>
+          <tr>
+            <td><strong>Current state</strong></td>
+            <td>What has been completed, what is actively in progress, what is known to be broken or incomplete</td>
+          </tr>
+          <tr>
+            <td><strong>Open questions</strong></td>
+            <td>Scientific or technical decisions that have not yet been resolved</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="cb-wrap">
+        <span class="cb-label">CLAUDE.md — minimal example structure</span>
+        <pre><code><span class="cm"># CLAUDE.md — LungAtlas</span>
+
+<span class="cm">## What this repo does</span>
+Single-cell and spatial transcriptomics analysis of rat lung
+fibrosis models. Primary data: Xenium spatial data (n=12 samples)
+and matched scRNAseq. All large objects live on the lab HPC at:
+/hpc/raredon/data/lungAtlas/
+
+<span class="cm">## Directory structure</span>
+functions/   — shared helper functions (Roxygen documented)
+scripts/     — numbered analysis scripts
+markdowns/   — Rmd vignettes
+docs/        — knit HTML outputs (committed to Git)
+
+<span class="cm">## Coding conventions</span>
+- R throughout; follow Raredon Lab coding standards (Document 04)
+- File naming: NN_YYYYMMDD_AB_descriptive-name.ext
+- Every function in functions/ must have a demo script in scripts/
+- No hardcoded paths; declare all paths at script top
+
+<span class="cm">## Current state (update when things change)</span>
+- QC and clustering complete for cohort 1 (n=6)
+- Cohort 2 preprocessing in progress (AB, branch: dev)
+- Spatial niche analysis: not yet started
+
+<span class="cm">## Open questions</span>
+- Optimal resolution parameter for Leiden clustering
+- Whether to merge cohorts before or after cell type annotation</code></pre>
+      </div>
+
+      <div class="call warn">
+        <div class="call-title">Keep it current</div>
+        <p>A stale <code>CLAUDE.md</code> is worse than no <code>CLAUDE.md</code>, because it tells Claude confidently wrong things about the project. Update it whenever the project structure changes significantly: new analysis phases, new datasets, major shifts in direction, or resolved open questions. Treat it as a living document, not a one-time setup step.</p>
+      </div>
+    </div>
+
+
+    <!-- §5 CLAUDE SKILLS FILES -->
+    <div class="sec" id="skills">
+      <h2><span class="sn">§5</span> Claude Skills files</h2>
+      <p>Claude Skills are a newer feature that allows you to package a specific workflow, set of instructions, or domain knowledge into a reusable file that Claude can load on demand. Where <code>CLAUDE.md</code> provides project-level context, a Skill encapsulates a repeatable task or methodology that can be applied across many projects.</p>
+      <p>Skills are defined by a <code>SKILL.md</code> file with a YAML frontmatter header. Claude reads the file when a relevant task is requested and follows its instructions. Skills can be stored in a project's <code>.claude/skills/</code> directory or at the user level (<code>~/.claude/skills/</code>) to make them available across all sessions.</p>
+
+      <h3>Skill file structure</h3>
+      <div class="cb-wrap">
+        <span class="cb-label">SKILL.md — template</span>
+        <pre><code>---
+name: raredon-r-function
+description: Write a documented R helper function following Raredon Lab
+  standards. Use when writing or refactoring a function for the
+  functions/ directory.
+---
+
+<span class="cm"># Raredon Lab R Function Standard</span>
+
+Write the function with the following structure:
+1. Roxygen header (@param, @return, @export, @examples)
+2. snake_case function and argument names
+3. Sensible defaults for all numeric and string arguments
+4. Explicit return() statement
+5. A companion demo script named demo_[function_name].R
+
+Style: clear inline comments on non-obvious steps; no hardcoded values.</code></pre>
+      </div>
+
+      <h3>Sharing skills across the lab</h3>
+      <p>Skills stored in a repository's <code>.claude/skills/</code> directory are committed to Git and shared with everyone who forks the repo. This is one practical path toward a common AI working standard across lab members: if the origin repository contains a set of agreed-upon Skills, every lab member's Claude — working from their personal fork — has access to the same workflow templates.</p>
+      <p>Anthropic maintains a public repository of Skills at <a href="https://github.com/anthropics/skills" target="_blank">github.com/anthropics/skills</a>, which can serve as a reference and source of inspiration for building lab-specific ones.</p>
+
+      <div class="call info">
+        <div class="call-title">Aspirational — lab Skills library</div>
+        <p>A longer-term goal is to build a shared library of Raredon Lab Skills covering common workflows: writing helper functions to lab standards, generating Roxygen documentation, running spatial analysis pipelines, writing commit messages, and others. If you develop a Skill that works well for a general task, contribute it to the appropriate repository so others can use it. This is a work in progress; contact the PI to discuss contributing.</p>
+      </div>
+    </div>
+
+
+    <!-- §6 PROMPTING EFFECTIVELY -->
+    <div class="sec" id="prompting">
+      <h2><span class="sn">§6</span> Prompting effectively</h2>
+
+      <h3>Think before prompting</h3>
+      <p>The quality of the output you get from Claude is directly proportional to the clarity of your own thinking going in. If you cannot describe your data structure, your goal, and the specific form you want the output to take, Claude cannot produce something useful. Before you type a prompt, spend time with the problem. If the description comes easily, you are ready. If it does not, you need to think more first.</p>
+      <p>AI is like a capable colleague who does not know your project. If you do not brief that colleague thoroughly, neither of you will understand the problem, and the resulting work will reflect that.</p>
+
+      <h3>Write long, specific prompts</h3>
+      <p>Vague prompts produce vague results. A good prompt for a complex task should include: the scientific context, the specific goal, the data structure involved (described in your own words), any constraints or preferences, and the exact form you want the output to take. Longer prompts that specify everything precisely outperform short prompts followed by many rounds of correction.</p>
+
+      <h3>Describe your data structure — do not upload your data</h3>
+      <p>Never upload raw lab data to a chat-based AI interface. Describe it instead. This practice has three benefits: it protects the lab's intellectual property; it reduces your token usage; and — most importantly — it protects your own learning. If you can describe your data structure clearly and specifically, you understand it. If you cannot, you have more work to do before involving AI. Describe the structure, the column names, the data types, the object class, and the relationships between objects. Send screenshots of outputs if visual reference helps. The AI can then produce tools for you to apply to your data locally.</p>
+
+      <div class="call rule">
+        <div class="call-title">Never upload raw data to AI interfaces</div>
+        <p>Raw data generated in this lab must not be uploaded to Claude, ChatGPT, or any other chat-based AI interface. Describe your data structure in text, or share screenshots of outputs. The actual data stays local or on lab storage.</p>
+      </div>
+
+      <h3>Iterate deliberately</h3>
+      <p>The best output usually comes from a sustained back-and-forth over time, not a single prompt. Give Claude time to produce something, then read it carefully. Evaluate it against what you actually wanted. Revise your instructions and go again. Save outputs as versioned files as you iterate. Take breaks and return with fresh eyes. Claude will suggest things, produce alternatives, and introduce ideas — some good, some not suited to your specific problem. You are the one who knows the project. Maintain control of the direction.</p>
+      <p>Do not let the AI take you for a walk. It will try to do whatever you prompt it to do, and it will do so with apparent confidence. Many of its ideas will be poorly suited to your specific situation. A senior lab member is a better guide when you are unsure how to steer a complex AI-assisted workflow.</p>
+
+      <h3>Requesting literature reviews</h3>
+      <p>When asking Claude to find papers or conduct a literature review, require that every result be reported in a table with: title, authors, year, journal, PMID or DOI, a working URL, and a brief description of relevance. It is your responsibility to verify that every citation exists, that the URL works, and that the paper says what Claude claims it says. Verify before you cite anything.</p>
+
+      <h3>Tasks AI handles well</h3>
+      <p>AI excels at highly technical, well-defined tasks that can be verified. Identifying tasks in this category and prompting AI to execute them is an effective use of the tool. Good examples include: writing boilerplate code and package infrastructure, implementing complex transformations you can describe but not easily code yourself, writing test suites, building documentation, and reorganizing spreadsheets according to specified rules. Ask AI to do something, then verify the output works as intended.</p>
+    </div>
+
+
+    <!-- §7 KNOWING AI'S LIMITS -->
+    <div class="sec" id="limitations">
+      <h2><span class="sn">§7</span> Knowing AI's limits</h2>
+
+      <h3>Hallucination is by design</h3>
+      <p>AI language models produce fluent, confident output by predicting what text should come next. They do not look things up; they generate. This means they will state false things with complete apparent confidence. You cannot prompt a model to stop hallucinating. The way to work around this is to structure your prompts so that outputs can be independently verified.</p>
+      <p>Code that runs and produces the right output can be verified. Citations with PMIDs and DOIs can be looked up. Table transformations can be spot-checked against the input. Prioritize tasks where the output is testable. For tasks where it is not — summarizing a paper, explaining a concept — treat the output as a useful starting point to evaluate, not a reliable source to trust.</p>
+
+      <h3>A practical test</h3>
+      <p>Before relying on any AI output, ask: could this be wrong in a way I would not detect? If yes, build in a verification step. If no — because the output is executable, searchable, or checkable against known data — proceed with appropriate confidence.</p>
+    </div>
+
+
+    <!-- §8 CITATION INTEGRITY -->
+    <div class="sec" id="citations">
+      <h2><span class="sn">§8</span> Citation integrity</h2>
+      <p>AI systems routinely invent citations. They produce author names, titles, journal names, and year of publication that look entirely plausible and do not correspond to any real paper. This is not a bug to be worked around — it is a fundamental property of how these systems generate text. Treat every AI-generated citation as unverified until you have confirmed it yourself.</p>
+
+      <div class="call rule">
+        <div class="call-title">Never publish a citation you have not verified</div>
+        <p>Every citation in any Raredon Lab document — paper, grant, preprint, poster — must be verified by a human. Verification means: (1) confirm the paper exists by finding it in PubMed, Google Scholar, or the journal directly; (2) download the paper; (3) read enough of it to confirm it supports the claim being made. A citation that has not been verified by these steps must not appear in a submitted document.</p>
+      </div>
+
+      <h3>On provenance and credit</h3>
+      <p>AI systems learn from an enormous corpus of scientific text and cannot trace the specific sources that inform their outputs. When AI gives you an idea, a method, or a framing, that knowledge originally came from someone. Make a habit of asking Claude to explain how it knows what it knows, and to conduct a literature review with verifiable identifiers so that you can find and credit the original authors. AI is eroding scientific provenance. Active effort to credit original authors where possible is both an ethical obligation and a scientific norm worth protecting.</p>
+    </div>
+
+
+    <!-- §9 ATTRIBUTION STANDARDS -->
+    <div class="sec" id="attribution">
+      <h2><span class="sn">§9</span> Attribution standards</h2>
+      <p>When AI tools contribute substantially to work in this lab, that contribution should be documented. The standard for each context:</p>
+
+      <table>
+        <thead><tr><th>Context</th><th>Standard</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Code — commit messages</strong></td>
+            <td>Note AI assistance in the commit message when Claude wrote or substantially structured the code being committed. Example: <code>Add spatial niche extraction function (Claude-assisted)</code></td>
+          </tr>
+          <tr>
+            <td><strong>Code — script headers</strong></td>
+            <td>Note AI assistance in the header block of any script where Claude contributed significantly. Add a line: <code># AI assistance: Claude (Anthropic), [date]</code></td>
+          </tr>
+          <tr>
+            <td><strong>Code — publications</strong></td>
+            <td>Disclose AI assistance in the methods or data availability section when AI tools were used in code development or analysis.</td>
+          </tr>
+          <tr>
+            <td><strong>Writing — methods sections</strong></td>
+            <td>Written by human authors. AI assistance is not appropriate for primary methods text.</td>
+          </tr>
+          <tr>
+            <td><strong>Writing — figure captions</strong></td>
+            <td>Written by human authors. Figure captions are part of the scientific record.</td>
+          </tr>
+          <tr>
+            <td><strong>Writing — grant text</strong></td>
+            <td>AI may assist with drafting grant text. All AI-generated text must be substantially revised by the author before submission.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+    <!-- §10 YALE POLICIES -->
+    <div class="sec" id="policy">
+      <h2><span class="sn">§10</span> Yale policies</h2>
+      <p>Yale's Office of the Provost has issued guidelines for the use of generative AI tools that apply to all research and academic work at Yale. The key points relevant to lab members:</p>
+      <ul>
+        <li><strong>Do not enter confidential or restricted data into AI tools.</strong> Yale's <a href="https://your.yale.edu/policies-procedures/policies/1604-data-classification-policy" target="_blank">data classification policy</a> identifies moderate- and high-risk data categories that must not be shared with external AI systems. When in doubt, treat data as restricted.</li>
+        <li><strong>Assume all information shared will become public.</strong> Do not share anything with an AI interface that you would not be comfortable making public. Information entered into AI tools may be retained and used in ways outside your control.</li>
+        <li><strong>Follow academic integrity guidelines.</strong> Unacknowledged AI-generated content constitutes academic dishonesty under Yale policy. Any AI-generated material used in submitted work must be cited or disclosed appropriately.</li>
+      </ul>
+      <p>The full Yale Provost guidelines are available at <a href="https://provost.yale.edu/news/guidelines-use-generative-ai-tools" target="_blank">provost.yale.edu</a>. Individual journals and funding agencies also maintain their own AI disclosure requirements; check these before submitting any manuscript or grant application.</p>
+    </div>
+
+
+    <!-- §11 OPTING OUT -->
+    <div class="sec" id="optout">
+      <h2><span class="sn">§11</span> A note on opting out</h2>
+      <p>You do not have to use AI tools to do good work in this lab. If you prefer to work without them, let the PI know. That preference will be respected. What matters is that the work is rigorous, reproducible, and well-documented — the tools used to produce it are secondary.</p>
+      <p>This document will be updated as the technology and the lab's practices evolve. It is one of the most rapidly changing areas of computational science at the moment, and the guidance here reflects current understanding, not permanent policy.</p>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  const sections = document.querySelectorAll('.sec[id]');
+  const tocLinks = document.querySelectorAll('.toc-link');
+  function updateToc() {
+    let current = '';
+    sections.forEach(sec => { if (sec.getBoundingClientRect().top < 140) current = sec.id; });
+    tocLinks.forEach(link => { link.classList.toggle('here', link.getAttribute('href') === '#' + current); });
+  }
+  window.addEventListener('scroll', updateToc, { passive: true });
+  updateToc();
+</script>
+
+</body>
+</html>

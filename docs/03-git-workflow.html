@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>03 — Git &amp; GitHub Workflow | Raredon Lab Manual</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sidebar-w: 256px; --header-h: 54px;
+      --bg: #FFFFFF; --sidebar-bg: #F6F5F1; --border: #E3E1DC;
+      --text-p: #1A1917; --text-s: #5C5A56; --text-t: #9C9A96;
+      --accent: #1D4ED8; --accent-lt: #EFF6FF; --accent-bd: #BFDBFE;
+      --code-bg: #F6F5F1; --code-bd: #D8D6D0;
+      --note-bg: #F0FDF4; --note-bd: #16A34A;
+      --warn-bg: #FFFBEB; --warn-bd: #D97706;
+      --rule-bg: #FFF1F2; --rule-bd: #E11D48;
+      --font: 'IBM Plex Sans', sans-serif;
+      --font-serif: 'IBM Plex Serif', serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+    html { scroll-behavior: smooth; font-size: 15px; }
+    body { font-family: var(--font); line-height: 1.75; color: var(--text-p); background: var(--bg); }
+
+    .site-header {
+      position: fixed; top: 0; left: 0; right: 0; height: var(--header-h);
+      background: #141210; display: flex; align-items: center;
+      padding: 0 24px; gap: 10px; z-index: 200;
+    }
+    .hdr-lab { font-family: var(--font-serif); font-size: 15px; font-weight: 600; color: #fff; }
+    .hdr-sep { color: rgba(255,255,255,0.25); font-size: 20px; }
+    .hdr-manual { font-size: 13px; color: rgba(255,255,255,0.55); }
+    .hdr-spacer { flex: 1; }
+    .hdr-badge { font-family: var(--font-mono); font-size: 11px; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); padding: 3px 9px; border-radius: 4px; }
+
+    .layout { display: flex; padding-top: var(--header-h); min-height: 100vh; }
+
+    .sidebar {
+      position: fixed; top: var(--header-h); left: 0;
+      width: var(--sidebar-w); height: calc(100vh - var(--header-h));
+      background: var(--sidebar-bg); border-right: 1px solid var(--border);
+      overflow-y: auto; padding: 28px 0 48px;
+    }
+    .sb-section { padding: 0 14px; margin-bottom: 28px; }
+    .sb-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-t); padding: 0 8px; margin-bottom: 6px; }
+    .nav-link { display: flex; align-items: baseline; gap: 6px; padding: 5px 8px; border-radius: 5px; font-size: 13px; color: var(--text-s); text-decoration: none; transition: background 0.12s, color 0.12s; line-height: 1.4; }
+    .nav-link:hover { background: rgba(0,0,0,0.05); color: var(--text-p); }
+    .nav-link.active { background: var(--accent-lt); color: var(--accent); font-weight: 500; }
+    .nav-link .n { font-family: var(--font-mono); font-size: 11px; color: var(--text-t); flex-shrink: 0; min-width: 22px; }
+    .nav-link.active .n { color: var(--accent); opacity: 0.7; }
+    .sb-div { border: none; border-top: 1px solid var(--border); margin: 10px 14px 16px; }
+    .toc-link { display: block; padding: 3px 8px; border-radius: 4px; font-size: 12.5px; color: var(--text-s); text-decoration: none; transition: color 0.12s; line-height: 1.5; }
+    .toc-link:hover { color: var(--accent); }
+    .toc-link.here { color: var(--accent); font-weight: 500; }
+
+    .content { margin-left: var(--sidebar-w); width: calc(100% - var(--sidebar-w)); max-width: calc(var(--sidebar-w) + 800px); padding: 52px 60px 100px; }
+
+    .eyebrow { font-family: var(--font-mono); font-size: 12px; color: var(--accent); font-weight: 500; letter-spacing: 0.05em; margin-bottom: 10px; }
+    .doc-title { font-family: var(--font-serif); font-size: 36px; font-weight: 600; line-height: 1.18; color: var(--text-p); margin-bottom: 14px; }
+    .doc-sub { font-size: 17px; color: var(--text-s); line-height: 1.65; max-width: 580px; padding-bottom: 36px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+
+    .sec { margin-bottom: 56px; scroll-margin-top: calc(var(--header-h) + 20px); }
+    h2 { font-family: var(--font-serif); font-size: 23px; font-weight: 600; color: var(--text-p); display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .sn { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--text-t); background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; flex-shrink: 0; }
+    h3 { font-size: 15px; font-weight: 600; color: var(--text-p); margin: 26px 0 10px; }
+    p { margin-bottom: 14px; }
+    p:last-child { margin-bottom: 0; }
+    a { color: var(--accent); }
+
+    .call { border-radius: 6px; padding: 14px 18px; border-left: 3px solid; margin: 22px 0; }
+    .call-title { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 6px; }
+    .call p { font-size: 14px; line-height: 1.65; margin: 0; }
+    .call.note { background: var(--note-bg); border-color: var(--note-bd); }
+    .call.note .call-title { color: #15803D; }
+    .call.warn { background: var(--warn-bg); border-color: var(--warn-bd); }
+    .call.warn .call-title { color: #B45309; }
+    .call.rule { background: var(--rule-bg); border-color: var(--rule-bd); }
+    .call.rule .call-title { color: #BE123C; }
+    .call.info { background: var(--accent-lt); border-color: var(--accent-bd); }
+    .call.info .call-title { color: var(--accent); }
+
+    code { font-family: var(--font-mono); font-size: 13px; background: var(--code-bg); border: 1px solid var(--code-bd); border-radius: 3px; padding: 1px 5px; color: #BE185D; }
+    .cb-wrap { margin: 20px 0; }
+    .cb-label { display: inline-block; font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-t); background: var(--sidebar-bg); border: 1px solid var(--border); border-bottom: none; border-radius: 5px 5px 0 0; padding: 4px 12px; position: relative; z-index: 1; }
+    pre { background: var(--code-bg); border: 1px solid var(--code-bd); border-radius: 0 6px 6px 6px; padding: 18px 20px; overflow-x: auto; font-family: var(--font-mono); font-size: 13px; line-height: 1.65; margin: 0; color: var(--text-p); }
+    .cb-wrap pre code { background: none; border: none; padding: 0; color: inherit; font-size: inherit; }
+    .cm { color: var(--text-t); font-style: italic; }
+    .dir { color: var(--accent); font-weight: 500; }
+
+    .steps { list-style: none; margin: 22px 0; }
+    .steps li { display: flex; gap: 16px; margin-bottom: 22px; align-items: flex-start; }
+    .snum { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #fff; font-family: var(--font-mono); font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+    .sc { flex: 1; }
+    .sc strong { display: block; font-weight: 600; margin-bottom: 3px; }
+    .sc p { font-size: 14px; color: var(--text-s); margin: 0; line-height: 1.6; }
+
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+    th { background: var(--sidebar-bg); font-weight: 600; text-align: left; padding: 9px 14px; border: 1px solid var(--border); font-size: 12px; }
+    td { padding: 9px 14px; border: 1px solid var(--border); vertical-align: top; line-height: 1.55; }
+    tr:nth-child(even) td { background: #FAFAF8; }
+
+    .dodont { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+    .do-box, .dn-box { border-radius: 6px; padding: 16px; font-size: 13.5px; line-height: 1.6; }
+    .do-box { background: var(--note-bg); border: 1px solid #BBF7D0; }
+    .dn-box { background: var(--rule-bg); border: 1px solid #FECDD3; }
+    .box-lbl { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 8px; }
+    .do-box .box-lbl { color: #15803D; }
+    .dn-box .box-lbl { color: #BE123C; }
+    .do-box code, .dn-box code { background: rgba(0,0,0,0.06); border-color: rgba(0,0,0,0.1); }
+    .dn-box code { color: #9F1239; }
+    .samp { display: block; margin-bottom: 10px; }
+    .samp:last-child { margin-bottom: 0; }
+
+    .diagram-wrap { background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 8px; padding: 28px 20px 20px; margin: 24px 0; }
+    .diagram-cap { font-size: 12.5px; color: var(--text-t); text-align: center; margin-top: 14px; font-style: italic; line-height: 1.5; }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="hdr-lab">Raredon Lab</span>
+  <span class="hdr-sep">·</span>
+  <span class="hdr-manual">Computational Lab Manual</span>
+  <div class="hdr-spacer"></div>
+  <span class="hdr-badge">Document 03 of 08</span>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Manual navigation">
+    <div class="sb-section">
+      <div class="sb-label">Documents</div>
+      <a href="index.html" class="nav-link"><span class="n">00</span> Overview &amp; index</a>
+      <a href="01-onboarding.html" class="nav-link"><span class="n">01</span> Onboarding</a>
+      <a href="02-computing-environment.html" class="nav-link"><span class="n">02</span> Computing environment</a>
+      <a href="03-git-workflow.html" class="nav-link active" aria-current="page"><span class="n">03</span> Git &amp; GitHub workflow</a>
+      <a href="04-coding-standards.html" class="nav-link"><span class="n">04</span> Coding standards</a>
+      <a href="05-data-management.html" class="nav-link"><span class="n">05</span> Data management</a>
+      <a href="06-ai-tools.html" class="nav-link"><span class="n">06</span> AI tools &amp; Claude</a>
+      <a href="07-ethics-teamwork.html" class="nav-link"><span class="n">07</span> Ethics &amp; teamwork</a>
+      <a href="08-publication.html" class="nav-link"><span class="n">08</span> Publication &amp; archiving</a>
+    </div>
+    <hr class="sb-div">
+    <div class="sb-section">
+      <div class="sb-label">Appendices</div>
+      <a href="appendix-a-exit-protocol.html" class="nav-link"><span class="n">A</span> Lab exit protocol</a>
+    </div>
+    <hr class="sb-div">
+    <div class="sb-section">
+      <div class="sb-label">On this page</div>
+      <a href="#why" class="toc-link">Why this matters</a>
+      <a href="#prereqs" class="toc-link">Prerequisites</a>
+      <a href="#fork-model" class="toc-link">The fork model</a>
+      <a href="#setup" class="toc-link">Setting up a repository</a>
+      <a href="#structure" class="toc-link">Repository structure</a>
+      <a href="#gitignore" class="toc-link">The .gitignore</a>
+      <a href="#daily" class="toc-link">Daily workflow</a>
+      <a href="#commits" class="toc-link">Commit practices</a>
+      <a href="#prs" class="toc-link">Pull requests</a>
+      <a href="#branches" class="toc-link">Branch rules</a>
+      <a href="#naming" class="toc-link">File naming conventions</a>
+      <a href="#ai" class="toc-link">Using AI with Git</a>
+      <a href="#mistakes" class="toc-link">Common mistakes</a>
+    </div>
+  </nav>
+
+  <main class="content">
+    <div class="eyebrow">Document 03</div>
+    <h1 class="doc-title">Git &amp; GitHub Workflow</h1>
+    <p class="doc-sub">A guide to version control, collaboration, and keeping a lasting computational record.</p>
+
+    <!-- §1 -->
+    <div class="sec" id="why">
+      <h2><span class="sn">§1</span> Why this matters</h2>
+      <p>The laboratory notebook is science's canonical record. It documents what was done, when, and why: establishing intellectual priority and enabling others to reproduce and extend your work. Computational science requires the same discipline. A script run once, saved locally, and never versioned carries no more lasting value than an experiment written on a scrap of paper. Git is a laboratory notebook for code.</p>
+      <p>The GitHub repository is also where shared infrastructure is built and maintained. Pushing your code makes it available for PI review and for collaborators to build on. It also creates the foundation for eventual public release, so that others can reproduce your results. When you leave the lab, your work remains here.</p>
+      <p>Pushing regularly with meaningful commit messages is how the team can help you. Code visible only on your local machine cannot be reviewed or assisted. Treat every commit as a scientific record entry: describe what changed and why.</p>
+    </div>
+
+    <!-- §2 -->
+    <div class="sec" id="prereqs">
+      <h2><span class="sn">§2</span> Prerequisites</h2>
+      <p>Complete the following before working with any Raredon Lab repository. Contact the PI or a senior lab member if you are stuck at any stage.</p>
+      <ol class="steps">
+        <li>
+          <span class="snum">1</span>
+          <div class="sc">
+            <strong>Create a personal GitHub account</strong>
+            <p>If you do not already have one, create a free account at <a href="https://github.com">github.com</a>. Choose a professional username: this account will be associated with your publications and scientific identity.</p>
+          </div>
+        </li>
+        <li>
+          <span class="snum">2</span>
+          <div class="sc">
+            <strong>Provide your username to the PI</strong>
+            <p>You will be added as a collaborator on relevant Raredon Lab repositories and will receive an email invitation that must be accepted before you can fork or contribute.</p>
+          </div>
+        </li>
+        <li>
+          <span class="snum">3</span>
+          <div class="sc">
+            <strong>Install a Git interface</strong>
+            <p><strong>New users:</strong> install <a href="https://desktop.github.com">GitHub Desktop</a>, which provides a clear graphical interface for all routine Git operations. Experienced users may use the command line or manage Git through Claude and other AI tools (see <a href="#ai">§12</a>).</p>
+          </div>
+        </li>
+        <li>
+          <span class="snum">4</span>
+          <div class="sc">
+            <strong>Configure Git with your identity</strong>
+            <p>Open a terminal and run the following. This name and email will appear in all your commits.</p>
+          </div>
+        </li>
+      </ol>
+      <div class="cb-wrap">
+        <span class="cb-label">Terminal</span>
+        <pre><code>git config --global user.name "Your Full Name"
+git config --global user.email "your.email@yale.edu"</code></pre>
+      </div>
+    </div>
+
+    <!-- §3 -->
+    <div class="sec" id="fork-model">
+      <h2><span class="sn">§3</span> The fork model</h2>
+      <p>Each lab member works from their own personal copy of a repository, called a <em>fork</em>, and proposes changes back to the shared lab copy via pull requests. This design keeps the shared codebase protected while maintaining full PI visibility into all active work.</p>
+
+      <div class="diagram-wrap">
+        <svg width="100%" viewBox="0 0 620 430" role="img" xmlns="http://www.w3.org/2000/svg">
+          <title>Raredon Lab fork-based Git workflow</title>
+          <desc>Three tiers: RaredonLab origin at top with main and dev branches, personal fork in the middle with a dev branch, and local clone at the bottom. Arrows show fork, clone, commit/push, and pull request flows.</desc>
+          <defs>
+            <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </marker>
+          </defs>
+          <rect x="80" y="18" width="460" height="118" rx="10" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1"/>
+          <text font-family="'IBM Plex Sans',sans-serif" font-size="10" font-weight="600" letter-spacing="0.09em" fill="#1E40AF" x="310" y="38" text-anchor="middle">RAREDONLAB / repo-name — ORIGIN</text>
+          <rect x="100" y="50" width="170" height="68" rx="6" fill="#DBEAFE" stroke="#93C5FD" stroke-width="0.5"/>
+          <text font-family="'IBM Plex Mono',monospace" font-size="14" font-weight="500" fill="#1E3A8A" x="185" y="78" text-anchor="middle">main</text>
+          <text font-family="'IBM Plex Sans',sans-serif" font-size="11" fill="#2563EB" x="185" y="96" text-anchor="middle">protected · PI / authorized only</text>
+          <rect x="290" y="50" width="230" height="68" rx="6" fill="#DBEAFE" stroke="#93C5FD" stroke-width="0.5"/>
+          <text font-family="'IBM Plex Mono',monospace" font-size="14" font-weight="500" fill="#1E3A8A" x="405" y="78" text-anchor="middle">dev</text>
+          <text font-family="'IBM Plex Sans',sans-serif" font-size="11" fill="#2563EB" x="405" y="96" text-anchor="middle">default branch · shared workspace</text>
+          <path d="M 290 72 C 290 60 269 60 269 72" fill="none" stroke="#7C3AED" stroke-width="1" marker-end="url(#arr)"/>
+          <text font-family="'IBM Plex Sans',sans-serif" font-size="10" fill="#7C3AED" x="279" y="56" text-anchor="middle">PI only</text>
+          <rect x="80" y="192" width="460" height="94" rx="10" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1"/>
+          <text font-family="'IBM Plex Sans',sans-serif" font-size="10" font-weight="600" letter-spacing="0.09em" fill="#15803D" x="310" y="212" text-anchor="middle">YOUR PERSONAL FORK — username / repo-name-AB</text>
+          <rect x="100" y="222" width="420" height="52" rx="6" fill="#DCFCE7" stroke="#86EFAC" stroke-width="0.5"/>
+          <text font-family="'IBM Plex Mono',monospace" font-size="14" font-weight="500" fill="#166534" x="310" y="246" text-anchor="middle">dev</text>
+          <text font-family="'IBM Plex Sans',sans-serif" font-size="11" fill="#16A34A" x="310" y="263" text-anchor="middle">your active working copy</text>
+          <rect x="80" y="344" width="460" height="68" rx="10" fill="#FFFBEB" stroke="#FCD34D" stroke-width="1"/>
+          <text font-family="'IBM Plex Sans',sans-serif" font-size="10" font-weight="600" letter-spacing="0.09em" fill="#92400E" x="310" y="368" text-anchor="middle">LOCAL CLONE</text>
+          <text font-family="'IBM Plex Mono',monospace" font-size="12" fill="#78350F" x="310" y="390" text-anchor="middle">~/projects/repo-name-AB   ·   /hpc/path/repo-name-AB</text>
+          <line x1="310" y1="136" x2="310" y2="190" stroke="#6B7280" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#arr)"/>
+          <rect x="254" y="153" width="114" height="18" rx="3" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="0.5"/>
+          <text font-family="'IBM Plex Sans',sans-serif" font-size="11" fill="#6B7280" x="311" y="165" text-anchor="middle">fork (one-time setup)</text>
+          <line x1="310" y1="286" x2="310" y2="342" stroke="#6B7280" stroke-width="1" stroke-dasharray="5 3" marker-end="url(#arr)"/>
+          <rect x="254" y="303" width="114" height="18" rx="3" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="0.5"/>
+          <text font-family="'IBM Plex Sans',sans-serif" font-size="11" fill="#6B7280" x="311" y="315" text-anchor="middle">clone (one-time setup)</text>
+          <path d="M 552 370 C 600 370 600 248 552 248" fill="none" stroke="#15803D" stroke-width="1.5" marker-end="url(#arr)"/>
+          <text font-family="'IBM Plex Sans',sans-serif" font-size="11" fill="#15803D" x="610" y="302" text-anchor="middle">commit</text>
+          <text font-family="'IBM Plex Sans',sans-serif" font-size="11" fill="#15803D" x="610" y="316" text-anchor="middle">+ push</text>
+          <path d="M 540 238 C 564 238 564 84 540 84" fill="none" stroke="#1D4ED8" stroke-width="1.5" marker-end="url(#arr)"/>
+          <text font-family="'IBM Plex Sans',sans-serif" font-size="11" fill="#1D4ED8" x="573" y="152" text-anchor="middle">pull</text>
+          <text font-family="'IBM Plex Sans',sans-serif" font-size="11" fill="#1D4ED8" x="573" y="166" text-anchor="middle">request</text>
+          <text font-family="'IBM Plex Sans',sans-serif" font-size="11" fill="#1D4ED8" x="573" y="180" text-anchor="middle">→ dev</text>
+        </svg>
+        <p class="diagram-cap">Initial setup flows downward (fork, then clone). Daily work and pull requests both flow on the right side: commit/push from local to personal fork, pull request from personal fork up to origin dev. Merging dev into main is reserved for the PI.</p>
+      </div>
+
+      <table>
+        <thead>
+          <tr><th>Tier</th><th>Naming convention</th><th>Branches</th><th>Who manages</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Origin</strong> — the lab's authoritative copy</td>
+            <td><code>RaredonLab/repo-name</code></td>
+            <td><code>main</code> + <code>dev</code></td>
+            <td>PI; initialized from the RaredonLab account</td>
+          </tr>
+          <tr>
+            <td><strong>Personal fork</strong> — your working copy</td>
+            <td><code>username/repo-name-AB</code></td>
+            <td><code>dev</code> (minimum)</td>
+            <td>You; forked from origin, cloned to your machines</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="call rule">
+        <div class="call-title">Protected — main is off limits</div>
+        <p>The <code>main</code> branch of the origin repository may not be pushed to or targeted by pull requests without explicit PI authorization. It holds only fully functional, milestone-worthy code. All active development happens in <code>dev</code>.</p>
+      </div>
+    </div>
+
+    <!-- §4 -->
+    <div class="sec" id="setup">
+      <h2><span class="sn">§4</span> Setting up a repository</h2>
+      <div class="call info">
+        <div class="call-title">For the PI / repository initializer</div>
+        <p>All new repositories must be created from the <strong>RaredonLab</strong> GitHub organization account, not from a personal account. Initialize the repository with both a <code>main</code> and a <code>dev</code> branch, set <code>dev</code> as the default, and add lab members as collaborators via Settings → Collaborators.</p>
+      </div>
+      <h3>Forking and cloning (each lab member, one time per repository)</h3>
+      <ol class="steps">
+        <li>
+          <span class="snum">1</span>
+          <div class="sc">
+            <strong>Navigate to the origin repository on GitHub</strong>
+            <p>Go to the RaredonLab repository while signed in to your personal account.</p>
+          </div>
+        </li>
+        <li>
+          <span class="snum">2</span>
+          <div class="sc">
+            <strong>Fork to your personal account</strong>
+            <p>Click the Fork button in the top right. Append your initials to the repository name so your fork is immediately identifiable: if the origin is <code>LungAtlas</code>, name your fork <code>LungAtlas-AB</code>. Fork the <code>dev</code> branch at minimum; include <code>main</code> if your role requires it.</p>
+          </div>
+        </li>
+        <li>
+          <span class="snum">3</span>
+          <div class="sc">
+            <strong>Clone to your local machine</strong>
+            <p>Clone your personal fork (not the origin) to your laptop and/or HPC workspace. In GitHub Desktop: File → Clone Repository, then select your fork. On the command line:</p>
+          </div>
+        </li>
+      </ol>
+      <div class="cb-wrap">
+        <span class="cb-label">Terminal</span>
+        <pre><code>git clone https://github.com/yourusername/repo-name-AB.git
+cd repo-name-AB</code></pre>
+      </div>
+      <p>You now have three connected copies: the origin on RaredonLab GitHub, your personal fork on GitHub, and your local clone on disk. All three stay in sync through the commit → push → pull request cycle described in <a href="#daily">§7</a>.</p>
+    </div>
+
+    <!-- §5 -->
+    <div class="sec" id="structure">
+      <h2><span class="sn">§5</span> Standard repository structure</h2>
+      <p>Analysis repositories routinely involve data objects in the 20–50 GB range: large R objects, spatial transcriptomics outputs, processed count matrices. None of this lives in Git. Git holds code, documentation, and lightweight HTML vignettes. Large data and outputs live on the HPC or designated shared storage, with their exact file paths clearly declared at the top of every script that uses them.</p>
+      <p>The following structure is the recommended default for analysis repositories. Keep it shallow — avoid nesting beyond what is shown here.</p>
+      <div class="cb-wrap">
+        <span class="cb-label">Recommended directory structure</span>
+        <pre><code><span class="dir">repo-name-AB/</span>
+│
+├── <span class="dir">functions/</span>           <span class="cm"># Reusable helper functions (generalized, documented)</span>
+│   ├── helpers_viz.R
+│   ├── helpers_qc.R
+│   └── helpers_io.R
+│
+├── <span class="dir">scripts/</span>             <span class="cm"># Numbered, dated, initialed analysis scripts</span>
+│   ├── 01_20250301_AB_preprocessing.R
+│   └── 02_20250308_AB_clustering.R
+│
+├── <span class="dir">markdowns/</span>           <span class="cm"># Rmarkdown analysis files</span>
+│   ├── 01_20250301_AB_eda.Rmd
+│   └── 02_20250308_AB_results.Rmd
+│
+├── <span class="dir">docs/</span>                <span class="cm"># Knit HTML vignettes — committed to Git</span>
+│   └── 01_20250301_AB_eda.html
+│
+├── <span class="dir">figures/</span>             <span class="cm"># Small figures for README / docs only</span>
+│   └── .gitkeep
+│
+├── <span class="dir">output/</span>              <span class="cm"># Large outputs — NOT committed (gitignored)</span>
+│   └── .gitkeep
+│
+├── <span class="dir">data/</span>                <span class="cm"># Raw data — NOT committed (gitignored)</span>
+│   └── .gitkeep
+│
+├── .gitignore
+├── README.md
+├── CLAUDE.md            <span class="cm"># AI context file — see Document 06</span>
+└── repo-name.Rproj</code></pre>
+      </div>
+      <div class="call note">
+        <div class="call-title">The .gitkeep convention</div>
+        <p>Git does not track empty directories. A blank file named <code>.gitkeep</code> inside <code>output/</code> and <code>data/</code> preserves the folder structure in the repository even though the contents are gitignored. Create one with <code>touch output/.gitkeep</code>.</p>
+      </div>
+      <div class="call warn">
+        <div class="call-title">Keep it flat</div>
+        <p>Avoid creating subdirectories within the folders above. Deep nesting makes paths long and fragile, and creates confusion when scripts move between machines or collaborators. If a project feels too large for this structure, ask whether it warrants a second repository rather than adding more directories.</p>
+      </div>
+    </div>
+
+    <!-- §6 -->
+    <div class="sec" id="gitignore">
+      <h2><span class="sn">§6</span> The <code>.gitignore</code></h2>
+      <p>Every Raredon Lab repository must include a <code>.gitignore</code> that excludes large data objects, generated outputs, session files, and credentials. Copy the following into the root of every new repository on first commit.</p>
+      <div class="cb-wrap">
+        <span class="cb-label">.gitignore — Raredon Lab standard</span>
+        <pre><code><span class="cm"># ── R session artifacts ─────────────────────────────────────────────</span>
+.Rhistory
+.RData
+.Rproj.user/
+
+<span class="cm"># ── Large R data objects (never commit) ─────────────────────────────</span>
+*.rds
+*.rda
+*.RData
+
+<span class="cm"># ── Genomics and spatial data files (never commit) ──────────────────</span>
+*.h5
+*.h5ad
+*.h5seurat
+*.loom
+*.mtx
+*.fastq
+*.fastq.gz
+*.bam
+*.bai
+
+<span class="cm"># ── Output and data directories (contents excluded) ─────────────────</span>
+output/*
+!output/.gitkeep
+data/*
+!data/.gitkeep
+
+<span class="cm"># ── OS and editor noise ─────────────────────────────────────────────</span>
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.vscode/
+
+<span class="cm"># ── Credentials — never commit ──────────────────────────────────────</span>
+.Renviron
+*.env
+secrets/</code></pre>
+      </div>
+      <div class="call rule">
+        <div class="call-title">Never commit credentials</div>
+        <p>API keys, HPC passwords, database credentials, and access tokens must never appear in a Git repository, private or otherwise. Store credentials in <code>.Renviron</code> (which is gitignored) and access them in R via <code>Sys.getenv("MY_KEY")</code>. If you accidentally commit a credential, notify the PI immediately and rotate the key before doing anything else.</p>
+      </div>
+    </div>
+
+    <!-- §7 -->
+    <div class="sec" id="daily">
+      <h2><span class="sn">§7</span> Daily workflow</h2>
+      <p>After initial setup, your routine has four steps: make changes locally, commit, push to your personal fork, and open a pull request when a meaningful unit of work is ready. The first two happen throughout a working day; the last two happen daily at minimum.</p>
+      <ol class="steps">
+        <li>
+          <span class="snum">1</span>
+          <div class="sc">
+            <strong>Make changes locally</strong>
+            <p>Write and edit code in your local clone, on your laptop or HPC. All work begins here.</p>
+          </div>
+        </li>
+        <li>
+          <span class="snum">2</span>
+          <div class="sc">
+            <strong>Stage and commit your changes</strong>
+            <p>Commit at logical stopping points, and always at the end of the day. In GitHub Desktop, review your changed files, write a commit message (see <a href="#commits">§8</a>), and click Commit to dev. On the command line:</p>
+          </div>
+        </li>
+      </ol>
+      <div class="cb-wrap">
+        <span class="cb-label">Terminal</span>
+        <pre><code>git add -A
+git commit -m "Add UMAP step to clustering pipeline; parameterize resolution in helpers_qc.R"</code></pre>
+      </div>
+      <ol class="steps" start="3">
+        <li>
+          <span class="snum">3</span>
+          <div class="sc">
+            <strong>Push to your personal fork</strong>
+            <p>Push committed changes to your fork on GitHub, not to the origin. In GitHub Desktop, click Push Origin. On the command line:</p>
+          </div>
+        </li>
+      </ol>
+      <div class="cb-wrap">
+        <span class="cb-label">Terminal</span>
+        <pre><code>git push origin dev</code></pre>
+      </div>
+      <ol class="steps" start="4">
+        <li>
+          <span class="snum">4</span>
+          <div class="sc">
+            <strong>Open a pull request to origin dev</strong>
+            <p>When you have a meaningful unit of work ready, open a pull request from your fork's <code>dev</code> branch to <code>RaredonLab/repo-name</code>'s <code>dev</code> branch. You may self-approve and merge if there are no conflicts. Tag the PI if you want review. See <a href="#prs">§9</a> for details.</p>
+          </div>
+        </li>
+      </ol>
+      <div class="call rule">
+        <div class="call-title">Mandatory — end-of-day push</div>
+        <p>Committing and pushing to your personal fork at the end of every working day is required. Code that exists only on your local machine is invisible to everyone else: it cannot be reviewed or helped with, and if your machine fails, it is gone. It takes one minute and is not optional.</p>
+      </div>
+    </div>
+
+    <!-- §8 -->
+    <div class="sec" id="commits">
+      <h2><span class="sn">§8</span> Commit practices</h2>
+      <h3>Frequency</h3>
+      <p>Commit whenever you complete a logical unit of work: a new function, a resolved bug, a completed analysis step. During complex or exploratory work, committing every 30–60 minutes protects against loss and creates a readable trail. During lighter work, end-of-day commits are sufficient. End-of-day commits are never optional.</p>
+      <h3>Commit messages</h3>
+      <p>A good commit message says what changed and why. It does not need to be long, but it must be specific. The commit history is a scientific record and should be interpretable by someone who was not present when the code was written, including yourself in six months.</p>
+      <div class="dodont">
+        <div class="do-box">
+          <div class="box-lbl">✓ Informative</div>
+          <code class="samp">Add QC filtering step with doublet removal via scDblFinder; update helpers_qc.R to accept min.cells param</code>
+          <code class="samp">Fix incorrect file path in helpers_io read_seurat(); update expected input format in docstring</code>
+          <code class="samp">Initial commit: scRNAseq preprocessing pipeline for rat lung cohort 1, n=6 samples</code>
+        </div>
+        <div class="dn-box">
+          <div class="box-lbl">✗ Uninformative</div>
+          <code class="samp">fixes</code>
+          <code class="samp">wip</code>
+          <code class="samp">update</code>
+          <code class="samp">asdf</code>
+        </div>
+      </div>
+      <div class="call note">
+        <div class="call-title">Claude can write your commit messages</div>
+        <p>If you are unsure how to describe your changes, ask Claude. Describe what changed or summarize your diff and ask for a commit message. Review and edit the result before committing. The message must be accurate, and you should stand behind what it says. See <a href="06-ai-tools.html">Document 06</a> for the full AI usage standard.</p>
+      </div>
+    </div>
+
+    <!-- §9 -->
+    <div class="sec" id="prs">
+      <h2><span class="sn">§9</span> Pull requests</h2>
+      <p>All code moving from a personal fork into the shared origin repository travels through a pull request, including straightforward changes with no conflicts. The pull request is the formal record of what changed and why, and it creates an opportunity for comment before code enters the shared codebase.</p>
+      <h3>Opening a pull request</h3>
+      <p>Navigate to your personal fork on GitHub and click "Contribute" → "Open pull request." Verify that the base repository is <code>RaredonLab/repo-name</code> and the base branch is <code>dev</code>. Write a descriptive title and a brief summary. If the PR implements a specific analysis step or resolves an issue, say so.</p>
+      <h3>Self-approval</h3>
+      <p>You may approve and merge your own pull request if there are no merge conflicts and the changes do not touch shared infrastructure: the helper functions in <code>functions/</code>, the <code>CLAUDE.md</code>, the <code>.gitignore</code>, or the <code>README.md</code>. Changes to shared infrastructure should be flagged for PI review regardless of conflict status.</p>
+      <h3>Requesting PI review</h3>
+      <p>For significant changes — new analysis pipelines, refactored helpers, anything affecting how other team members use the repository — add the PI as a reviewer with a note explaining what you would like reviewed and any open questions.</p>
+      <div class="call rule">
+        <div class="call-title">Never pull request to main</div>
+        <p>All pull requests from personal forks target the <code>dev</code> branch of the origin. Merging <code>dev</code> into <code>main</code> is a deliberate, infrequent operation performed only by the PI or an explicitly authorized lab member, and only when the codebase has reached a stable, fully functional milestone.</p>
+      </div>
+    </div>
+
+    <!-- §10 -->
+    <div class="sec" id="branches">
+      <h2><span class="sn">§10</span> Branch rules</h2>
+      <table>
+        <thead>
+          <tr><th>Branch</th><th>Lives in</th><th>Purpose</th><th>Who may merge into it</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>main</code></td>
+            <td>Origin only</td>
+            <td>Fully functional, milestone-worthy code. The stable scientific record.</td>
+            <td>PI and explicitly authorized individuals only</td>
+          </tr>
+          <tr>
+            <td><code>dev</code></td>
+            <td>Origin + all personal forks</td>
+            <td>Active development. The shared team working space.</td>
+            <td>Lab members via pull request from personal fork</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>For routine work, no additional branches are needed within your personal fork. If a large experimental feature warrants isolation, discuss it with the PI before creating feature branches. Keep the branching model as simple as possible.</p>
+    </div>
+
+    <!-- §11 -->
+    <div class="sec" id="naming">
+      <h2><span class="sn">§11</span> File naming conventions</h2>
+      <p>Consistent file naming allows anyone to understand who created a file, when, and in what order without opening it. Every file you create should be interpretable from its name alone.</p>
+      <h3>The standard pattern</h3>
+      <div class="cb-wrap">
+        <span class="cb-label">Pattern</span>
+        <pre><code>NN_YYYYMMDD_AB_descriptive-name.ext</code></pre>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Component</th><th>Meaning</th><th>Format</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>NN</code></td>
+            <td>Sequence number within the analysis</td>
+            <td>Two-digit integer: <code>01</code>, <code>02</code>, <code>03</code></td>
+          </tr>
+          <tr>
+            <td><code>YYYYMMDD</code></td>
+            <td>Date of creation or last major revision</td>
+            <td>ISO 8601, no separators: <code>20250315</code></td>
+          </tr>
+          <tr>
+            <td><code>AB</code></td>
+            <td>Author initials</td>
+            <td>2–4 uppercase letters: <code>NW</code>, <code>NK</code>, <code>SE</code>, <code>MSBR</code></td>
+          </tr>
+          <tr>
+            <td><code>descriptive-name</code></td>
+            <td>What the file does or contains</td>
+            <td>Lowercase words separated by hyphens; no spaces or underscores between words</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="cb-wrap">
+        <span class="cb-label">Examples</span>
+        <pre><code>01_20250301_AB_preprocessing-qc.R
+02_20250308_AB_clustering-umap.Rmd
+03_20250315_CD_spatial-niche-analysis.Rmd
+helpers_20250220_MSBR_visualization-utils.R
+01_20250301_AB_eda-overview.html   <span class="cm"># knit vignette in docs/</span></code></pre>
+      </div>
+      <div class="call note">
+        <div class="call-title">Stamp your outputs too</div>
+        <p>The same convention applies to figures, exported tables, and any output files not committed to Git. Name a saved plot <code>02_20250308_NW_umap-celltype.pdf</code>, not <code>plot_final_v3.pdf</code>. Date stamps on outputs make it possible to match figures to the code and data versions that produced them.</p>
+      </div>
+    </div>
+
+    <!-- §12 -->
+    <div class="sec" id="ai">
+      <h2><span class="sn">§12</span> Using Claude and AI tools with Git</h2>
+      <p>AI tools have an explicit, encouraged role in the workflow described here. The goal is to use AI for the mechanical parts of version control so you can focus on the science.</p>
+      <h3>Writing commit messages</h3>
+      <p>Claude writes good commit messages. If you are uncertain what to write, describe your changes in plain language or paste a summary of your diff and ask Claude to draft a message. Review and edit it before committing: the message must be accurate, and you should understand what it says.</p>
+      <h3>The <code>CLAUDE.md</code> file</h3>
+      <p>Every repository should contain a <code>CLAUDE.md</code> file in the root directory. This file gives Claude essential context about the repository: what it does, how it is structured, where data lives, what conventions apply, and the current state of active work.</p>
+      <p>When you open a Claude session to work on code in a repository, load the <code>CLAUDE.md</code> as context first. Update it when significant structural changes occur: new analysis phases, restructured helpers, new datasets, or major shifts in direction. The <code>CLAUDE.md</code> is a living document and should be treated as such.</p>
+      <p>The longer-term goal is that each lab member's Claude, working from a current <code>CLAUDE.md</code>, can interact with and learn from the shared codebase, enabling a form of AI-assisted cross-pollination between team members' work. See <a href="06-ai-tools.html">Document 06</a> for the full standard.</p>
+      <h3>Git commands via AI</h3>
+      <p>Claude can help with Git syntax when you are unsure. Describe what you want to accomplish and ask for the command. Read and verify the output before running it, particularly for anything involving <code>--force</code>, <code>reset</code>, <code>rebase</code>, or operations that modify history.</p>
+    </div>
+
+    <!-- §13 -->
+    <div class="sec" id="mistakes">
+      <h2><span class="sn">§13</span> Common mistakes to avoid</h2>
+      <h3>Not pushing regularly</h3>
+      <p>Code that exists only on your local machine is invisible to the rest of the lab. It cannot be reviewed or helped with, and if your machine fails, it is gone. Push to your personal fork at the end of every working day. During intensive work, push every hour or two. This habit takes seconds and provides considerable protection.</p>
+      <h3>Deep directory nesting</h3>
+      <p>Nested subdirectories make file paths long and fragile, and create confusion when scripts move between machines or collaborators. Keep repositories shallow. If a project feels too large for the recommended structure, ask whether it should be split into two repositories rather than adding more directories.</p>
+      <h3>Committing large files</h3>
+      <p>Git is not designed for large binary files. An accidentally committed <code>.rds</code> or <code>.h5</code> file becomes part of the repository's permanent history and can make cloning very slow. Verify that your <code>.gitignore</code> is in place before your first commit. If a large file is accidentally committed, notify the PI before attempting to remove it from history.</p>
+      <h3>Pushing to the origin directly</h3>
+      <p>Never push changes directly to the <code>RaredonLab</code> origin repository, even with permission to do so. All changes flow through your personal fork and a pull request. This keeps the shared codebase protected and ensures every change has a review checkpoint.</p>
+      <h3>Vague commit messages</h3>
+      <p>A commit labeled <code>update</code> or <code>wip</code> is not a useful scientific record. When you are writing a methods section or trying to reproduce a figure months later, you will not know what that commit contained or why it mattered. Write a specific message every time, or ask Claude to help.</p>
+      <div class="call info">
+        <div class="call-title">When in doubt, ask</div>
+        <p>Git mistakes are recoverable in almost all cases. If you are unsure what to do, especially before running <code>reset</code>, <code>rebase</code>, or any force push, ask the PI or a senior lab member first. A few minutes of consultation can prevent hours of recovery work.</p>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  const sections = document.querySelectorAll('.sec[id]');
+  const tocLinks = document.querySelectorAll('.toc-link');
+  function updateToc() {
+    let current = '';
+    sections.forEach(sec => { if (sec.getBoundingClientRect().top < 140) current = sec.id; });
+    tocLinks.forEach(link => { link.classList.toggle('here', link.getAttribute('href') === '#' + current); });
+  }
+  window.addEventListener('scroll', updateToc, { passive: true });
+  updateToc();
+</script>
+</body>
+</html>

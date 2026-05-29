@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>01 — Onboarding | Raredon Lab Manual</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sidebar-w: 256px; --header-h: 54px;
+      --bg: #FFFFFF; --sidebar-bg: #F6F5F1; --border: #E3E1DC;
+      --text-p: #1A1917; --text-s: #5C5A56; --text-t: #9C9A96;
+      --accent: #1D4ED8; --accent-lt: #EFF6FF; --accent-bd: #BFDBFE;
+      --code-bg: #F6F5F1; --code-bd: #D8D6D0;
+      --note-bg: #F0FDF4; --note-bd: #16A34A;
+      --warn-bg: #FFFBEB; --warn-bd: #D97706;
+      --rule-bg: #FFF1F2; --rule-bd: #E11D48;
+      --font: 'IBM Plex Sans', sans-serif;
+      --font-serif: 'IBM Plex Serif', serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+    html { scroll-behavior: smooth; font-size: 15px; }
+    body { font-family: var(--font); line-height: 1.75; color: var(--text-p); background: var(--bg); }
+
+    .site-header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); background: #141210; display: flex; align-items: center; padding: 0 24px; gap: 10px; z-index: 200; }
+    .hdr-lab { font-family: var(--font-serif); font-size: 15px; font-weight: 600; color: #fff; }
+    .hdr-sep { color: rgba(255,255,255,0.25); font-size: 20px; }
+    .hdr-manual { font-size: 13px; color: rgba(255,255,255,0.55); }
+    .hdr-spacer { flex: 1; }
+    .hdr-badge { font-family: var(--font-mono); font-size: 11px; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); padding: 3px 9px; border-radius: 4px; }
+
+    .layout { display: flex; padding-top: var(--header-h); min-height: 100vh; }
+
+    .sidebar { position: fixed; top: var(--header-h); left: 0; width: var(--sidebar-w); height: calc(100vh - var(--header-h)); background: var(--sidebar-bg); border-right: 1px solid var(--border); overflow-y: auto; padding: 28px 0 48px; }
+    .sb-section { padding: 0 14px; margin-bottom: 28px; }
+    .sb-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-t); padding: 0 8px; margin-bottom: 6px; }
+    .nav-link { display: flex; align-items: baseline; gap: 6px; padding: 5px 8px; border-radius: 5px; font-size: 13px; color: var(--text-s); text-decoration: none; transition: background 0.12s, color 0.12s; line-height: 1.4; }
+    .nav-link:hover { background: rgba(0,0,0,0.05); color: var(--text-p); }
+    .nav-link.active { background: var(--accent-lt); color: var(--accent); font-weight: 500; }
+    .nav-link .n { font-family: var(--font-mono); font-size: 11px; color: var(--text-t); flex-shrink: 0; min-width: 22px; }
+    .nav-link.active .n { color: var(--accent); opacity: 0.7; }
+    .sb-div { border: none; border-top: 1px solid var(--border); margin: 10px 14px 16px; }
+    .toc-link { display: block; padding: 3px 8px; border-radius: 4px; font-size: 12.5px; color: var(--text-s); text-decoration: none; transition: color 0.12s; line-height: 1.5; }
+    .toc-link:hover { color: var(--accent); }
+    .toc-link.here { color: var(--accent); font-weight: 500; }
+
+    .content { margin-left: var(--sidebar-w); width: calc(100% - var(--sidebar-w)); max-width: calc(var(--sidebar-w) + 800px); padding: 52px 60px 100px; }
+
+    .eyebrow { font-family: var(--font-mono); font-size: 12px; color: var(--accent); font-weight: 500; letter-spacing: 0.05em; margin-bottom: 10px; }
+    .doc-title { font-family: var(--font-serif); font-size: 36px; font-weight: 600; line-height: 1.18; color: var(--text-p); margin-bottom: 14px; }
+    .doc-sub { font-size: 17px; color: var(--text-s); line-height: 1.65; max-width: 580px; padding-bottom: 36px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+
+    .sec { margin-bottom: 56px; scroll-margin-top: calc(var(--header-h) + 20px); }
+    h2 { font-family: var(--font-serif); font-size: 23px; font-weight: 600; color: var(--text-p); display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .sn { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--text-t); background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; flex-shrink: 0; }
+    h3 { font-size: 15px; font-weight: 600; color: var(--text-p); margin: 28px 0 10px; }
+    p { margin-bottom: 14px; }
+    p:last-child { margin-bottom: 0; }
+    a { color: var(--accent); }
+    ul, ol { margin: 12px 0 14px 20px; }
+    li { margin-bottom: 7px; line-height: 1.65; }
+
+    .call { border-radius: 6px; padding: 14px 18px; border-left: 3px solid; margin: 22px 0; }
+    .call-title { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 6px; }
+    .call p { font-size: 14px; line-height: 1.65; margin: 0; }
+    .call p + p { margin-top: 8px; }
+    .call.note { background: var(--note-bg); border-color: var(--note-bd); }
+    .call.note .call-title { color: #15803D; }
+    .call.warn { background: var(--warn-bg); border-color: var(--warn-bd); }
+    .call.warn .call-title { color: #B45309; }
+    .call.rule { background: var(--rule-bg); border-color: var(--rule-bd); }
+    .call.rule .call-title { color: #BE123C; }
+    .call.info { background: var(--accent-lt); border-color: var(--accent-bd); }
+    .call.info .call-title { color: var(--accent); }
+
+    code { font-family: var(--font-mono); font-size: 13px; background: var(--code-bg); border: 1px solid var(--code-bd); border-radius: 3px; padding: 1px 5px; color: #BE185D; }
+
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+    th { background: var(--sidebar-bg); font-weight: 600; text-align: left; padding: 9px 14px; border: 1px solid var(--border); font-size: 12px; }
+    td { padding: 9px 14px; border: 1px solid var(--border); vertical-align: top; line-height: 1.6; }
+    tr:nth-child(even) td { background: #FAFAF8; }
+    td a { color: var(--accent); text-decoration: none; }
+    td a:hover { text-decoration: underline; }
+
+    /* Steps */
+    .steps { list-style: none; margin: 22px 0; padding: 0; }
+    .steps li { display: flex; gap: 16px; margin-bottom: 18px; align-items: flex-start; }
+    .snum { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #fff; font-family: var(--font-mono); font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+    .sc { flex: 1; }
+    .sc strong { display: block; font-weight: 600; margin-bottom: 3px; font-size: 15px; }
+    .sc p { font-size: 14px; color: var(--text-s); margin: 0; line-height: 1.6; }
+
+    /* Four steps flow */
+    .four-steps { display: grid; grid-template-columns: 1fr 24px 1fr 24px 1fr 24px 1fr; align-items: center; gap: 0; margin: 28px 0; }
+    .step-card { border: 1px solid var(--border); border-radius: 8px; padding: 16px 14px; text-align: center; background: var(--bg); }
+    .step-card .step-num { font-family: var(--font-mono); font-size: 10px; color: var(--text-t); font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+    .step-card .step-name { font-family: var(--font-serif); font-size: 16px; font-weight: 600; color: var(--accent); margin-bottom: 6px; }
+    .step-card .step-desc { font-size: 12px; color: var(--text-s); line-height: 1.5; }
+    .step-arrow { text-align: center; color: var(--text-t); font-size: 18px; }
+
+    /* Maxim cards */
+    .maxims { display: flex; flex-direction: column; gap: 20px; margin: 24px 0; }
+    .maxim { display: flex; gap: 20px; align-items: flex-start; }
+    .maxim-quote { font-family: var(--font-serif); font-size: 15px; font-style: italic; color: var(--accent); font-weight: 600; flex-shrink: 0; width: 240px; line-height: 1.4; padding-top: 3px; }
+    .maxim-body { flex: 1; font-size: 14px; color: var(--text-s); line-height: 1.7; border-left: 2px solid var(--border); padding-left: 20px; }
+
+    /* Resource table tag pills */
+    .tag { display: inline-block; font-family: var(--font-mono); font-size: 10px; background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 3px; padding: 1px 6px; color: var(--text-t); white-space: nowrap; }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="hdr-lab">Raredon Lab</span>
+  <span class="hdr-sep">·</span>
+  <span class="hdr-manual">Computational Lab Manual</span>
+  <div class="hdr-spacer"></div>
+  <span class="hdr-badge">Document 01 of 08</span>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Manual navigation">
+    <div class="sb-section">
+      <div class="sb-label">Documents</div>
+      <a href="index.html" class="nav-link"><span class="n">00</span> Overview &amp; index</a>
+      <a href="01-onboarding.html" class="nav-link active" aria-current="page"><span class="n">01</span> Onboarding</a>
+      <a href="02-computing-environment.html" class="nav-link"><span class="n">02</span> Computing environment</a>
+      <a href="03-git-workflow.html" class="nav-link"><span class="n">03</span> Git &amp; GitHub workflow</a>
+      <a href="04-coding-standards.html" class="nav-link"><span class="n">04</span> Coding standards</a>
+      <a href="05-data-management.html" class="nav-link"><span class="n">05</span> Data management</a>
+      <a href="06-ai-tools.html" class="nav-link"><span class="n">06</span> AI tools &amp; Claude</a>
+      <a href="07-ethics-teamwork.html" class="nav-link"><span class="n">07</span> Ethics &amp; teamwork</a>
+      <a href="08-publication.html" class="nav-link"><span class="n">08</span> Publication &amp; archiving</a>
+    </div>
+    <hr class="sb-div">
+    <div class="sb-section">
+      <div class="sb-label">Appendices</div>
+      <a href="appendix-a-exit-protocol.html" class="nav-link"><span class="n">A</span> Lab exit protocol</a>
+    </div>
+    <hr class="sb-div">
+    <div class="sb-section">
+      <div class="sb-label">On this page</div>
+      <a href="#overview" class="toc-link">Overview</a>
+      <a href="#manual" class="toc-link">Why this manual exists</a>
+      <a href="#firstweek" class="toc-link">Your first week</a>
+      <a href="#whotoask" class="toc-link">Who to ask for what</a>
+      <a href="#resources" class="toc-link">Tools and resources</a>
+      <a href="#goodweek" class="toc-link">What a good week looks like</a>
+      <a href="#colleague" class="toc-link">Being a good colleague</a>
+      <a href="#foursteps" class="toc-link">The four steps of data science</a>
+      <a href="#maxims" class="toc-link">Things worth remembering</a>
+    </div>
+  </nav>
+
+  <main class="content">
+    <div class="eyebrow">Document 01</div>
+    <h1 class="doc-title">Onboarding</h1>
+    <p class="doc-sub">What this part of the lab does, and guidance for how to get started.</p>
+
+
+    <!-- §1 OVERVIEW -->
+    <div class="sec" id="overview">
+      <h2><span class="sn">§1</span> Overview of the computational wing of the Raredon Lab</h2>
+      <p>The computational wing develops tools, methods, and analyses to investigate cell-to-cell signaling and tissue-scale phenomena — the patterns and behaviors that emerge from many interacting cells and cannot be understood by studying single molecules or single cells in isolation. The work spans tissue biology, tissue engineering, and computational biology, and is built to be generalizable: methods and findings should extend readily to other tissues, other labs, and other questions beyond those immediately under study. A defining commitment is using visualization to make structure legible — understanding what is in a dataset before measuring it, then developing purpose-built visuals to communicate findings to computational and non-computational colleagues alike. Much of the lab's data is graph-structured, or can be meaningfully formalized as a graph, and this geometric lens shapes how tools are built and results are interpreted. Computational scientists here serve the larger wet-lab and clinical team by translating biological measurements into rigorous, reproducible, shareable quantitative insight. The work demands sustained curiosity, careful habits of documentation, and the willingness to explain what you are doing in plain language to anyone who asks.</p>
+    </div>
+
+
+    <!-- §2 WHY THIS MANUAL EXISTS -->
+    <div class="sec" id="manual">
+      <h2><span class="sn">§2</span> Why this manual exists</h2>
+      <p>A computational lab is as complex as a wet lab. It has protocols, best practices, and standards that are just as essential to producing high-quality, reproducible, broadly applicable science. The practices described here make the work more durable: easier for collaborators to use, easier for reviewers to trust, and easier for future scientists to build on.</p>
+      <p>Writing these practices down is also a statement of respect for the people who join this lab. Standards passed on informally are uneven, easily forgotten, and impossible to improve collectively. A written record gives everyone the same foundation to work from, and something concrete to update as tools and methods evolve.</p>
+      <p>Read this manual once, front to back, when you join. Confirm with the PI that you have done so, and bring any questions to your second 1:1. Refer back to specific sections whenever you need a reminder, and use it to orient others when the time comes. The manual will be revised over time as the lab's practices develop.</p>
+    </div>
+
+
+    <!-- §3 YOUR FIRST WEEK -->
+    <div class="sec" id="firstweek">
+      <h2><span class="sn">§3</span> Your first week</h2>
+      <p>The following checklist covers the practical setup that should be complete by the end of your first week. Work through it in roughly this order and ask for help whenever you need it.</p>
+
+      <ol class="steps">
+        <li>
+          <span class="snum">1</span>
+          <div class="sc">
+            <strong>Read this manual</strong>
+            <p>Start here, front to back. Note any questions as you go. You do not need to memorize it; you need a map of what is here and where to find it.</p>
+          </div>
+        </li>
+        <li>
+          <span class="snum">2</span>
+          <div class="sc">
+            <strong>Set up your computing environment</strong>
+            <p>Follow <a href="02-computing-environment.html">Document 02</a> to install required software and configure your machine and HPC access. Do not skip steps or defer items: a properly configured environment is the foundation for everything else.</p>
+          </div>
+        </li>
+        <li>
+          <span class="snum">3</span>
+          <div class="sc">
+            <strong>Schedule your recurring 1:1 with the PI</strong>
+            <p>Set up a weekly meeting with the PI. This is your primary channel for scientific direction, project feedback, and discussing blockers. Establish it in the first week so it becomes part of your routine immediately.</p>
+          </div>
+        </li>
+        <li>
+          <span class="snum">4</span>
+          <div class="sc">
+            <strong>Get your calendar and communications set up</strong>
+            <p>Configure your Yale Outlook calendar. Make sure you are invited to all recurring lab meetings and added to the relevant mailing lists. Join the lab Slack workspace, the primary channel for day-to-day questions and coordination.</p>
+          </div>
+        </li>
+        <li>
+          <span class="snum">5</span>
+          <div class="sc">
+            <strong>Meet with a senior lab member to complete your setup</strong>
+            <p>Schedule a dedicated setup meeting with the senior computational scientist in the lab. This session covers HPC access, data object locations, lab-specific workflows, and any setup items not covered by the general computing environment document.</p>
+          </div>
+        </li>
+        <li>
+          <span class="snum">6</span>
+          <div class="sc">
+            <strong>Get access to the relevant data</strong>
+            <p>Identify the primary datasets you will be working with and confirm access. Large data objects live on the lab HPCs, the Raredon Lab server, or the RaredonLab SharePoint. Know which applies to your project before you need the data for the first time.</p>
+          </div>
+        </li>
+        <li>
+          <span class="snum">7</span>
+          <div class="sc">
+            <strong>Review the setup checklist with the PI</strong>
+            <p>At your second 1:1 meeting, walk through the setup checklist together. This is also the time to ask any questions that came up while reading this manual and to get clarity on your initial project focus.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+
+    <!-- §4 WHO TO ASK FOR WHAT -->
+    <div class="sec" id="whotoask">
+      <h2><span class="sn">§4</span> Who to ask for what</h2>
+      <p>Different questions belong in different places. Getting this right saves time for everyone.</p>
+
+      <table>
+        <thead>
+          <tr><th>Type of question</th><th>Where to bring it</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>General questions that do not need an immediate answer — computational methods, tool usage, data interpretation, anything a lab member might know</td>
+            <td><strong>Slack.</strong> Post in the appropriate channel. Anyone in the lab can respond, and the answer becomes searchable history for others.</td>
+          </tr>
+          <tr>
+            <td>Computing environment setup, HPC access, Git configuration, lab-specific workflows</td>
+            <td><strong>Senior computational scientist.</strong> Schedule a dedicated meeting early on (see §3, step 5). For specific issues later, Slack is usually fine.</td>
+          </tr>
+          <tr>
+            <td>Scientific direction, project prioritization, authorship, collaboration decisions</td>
+            <td><strong>PI (weekly 1:1).</strong> Bring an agenda. If something is urgent and cannot wait, send a Slack message flagging it.</td>
+          </tr>
+          <tr>
+            <td>Stuck on a coding problem for more than an hour</td>
+            <td><strong>Claude or AI tools first, then Slack, then 1:1.</strong> See <a href="06-ai-tools.html">Document 06</a> for guidance on using AI effectively. Ask for help early.</td>
+          </tr>
+          <tr>
+            <td>Administrative or logistical matters</td>
+            <td>Consult Yale departmental resources or ask the PI to point you to the right contact.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+    <!-- §5 TOOLS AND RESOURCES -->
+    <div class="sec" id="resources">
+      <h2><span class="sn">§5</span> Tools and resources to learn</h2>
+      <p>The following tools form the core computational stack. Familiarity with the ones relevant to your current project is the starting expectation; the others should be learned actively over time. Each entry includes a link to the best starting point.</p>
+
+      <h3>R environment and core packages</h3>
+      <table>
+        <thead><tr><th>Tool</th><th>What it is</th><th>Start here</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>R</strong></td>
+            <td>Primary programming language for analysis and visualization</td>
+            <td><a href="https://r4ds.hadley.nz" target="_blank">R for Data Science (free online)</a></td>
+          </tr>
+          <tr>
+            <td><strong>RStudio / Positron</strong></td>
+            <td>IDEs for writing and running R code. Positron is the newer Posit IDE and is preferred.</td>
+            <td><a href="https://positron.posit.co" target="_blank">Positron documentation</a></td>
+          </tr>
+          <tr>
+            <td><strong>ggplot2</strong></td>
+            <td>Primary plotting library. The grammar of graphics in R.</td>
+            <td><a href="https://ggplot2.tidyverse.org" target="_blank">ggplot2 documentation</a> · <a href="https://clauswilke.com/dataviz/" target="_blank">Fundamentals of Data Visualization (free)</a></td>
+          </tr>
+          <tr>
+            <td><strong>dplyr</strong></td>
+            <td>Data manipulation: filtering, grouping, summarizing, joining.</td>
+            <td><a href="https://dplyr.tidyverse.org" target="_blank">dplyr documentation</a></td>
+          </tr>
+          <tr>
+            <td><strong>cowplot</strong></td>
+            <td>Publication-quality figure composition and layout.</td>
+            <td><a href="https://wilkelab.org/cowplot/" target="_blank">cowplot documentation</a></td>
+          </tr>
+          <tr>
+            <td><strong>ComplexHeatmap</strong></td>
+            <td>Highly customizable heatmaps for high-dimensional data.</td>
+            <td><a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/" target="_blank">ComplexHeatmap reference (free)</a></td>
+          </tr>
+          <tr>
+            <td><strong>sf</strong></td>
+            <td>Spatial data manipulation and analysis in R.</td>
+            <td><a href="https://r-spatial.github.io/sf/" target="_blank">sf documentation</a></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Single-cell and spatial analysis</h3>
+      <table>
+        <thead><tr><th>Tool</th><th>What it is</th><th>Start here</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>NICHES</strong></td>
+            <td>Lab-developed framework for quantifying cell-to-cell communication at single-cell and spatial resolution (R)</td>
+            <td><a href="https://github.com/msraredon/NICHES" target="_blank">NICHES on GitHub</a></td>
+          </tr>
+          <tr>
+            <td><strong>Seurat</strong></td>
+            <td>Primary R framework for single-cell RNA-seq analysis and multi-modal integration</td>
+            <td><a href="https://satijalab.org/seurat/" target="_blank">Seurat vignettes (Satija Lab)</a></td>
+          </tr>
+          <tr>
+            <td><strong>scanpy</strong></td>
+            <td>Primary Python framework for single-cell analysis (scverse ecosystem)</td>
+            <td><a href="https://scanpy.readthedocs.io" target="_blank">scanpy documentation</a></td>
+          </tr>
+          <tr>
+            <td><strong>XeniumExplorer</strong></td>
+            <td>10x Genomics tool for visualizing and exploring Xenium spatial transcriptomics data</td>
+            <td><a href="https://www.10xgenomics.com/products/xenium-explorer" target="_blank">10x Genomics Xenium Explorer</a></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Learning resources</h3>
+      <table>
+        <thead><tr><th>Resource</th><th>What you will learn</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><a href="https://r4ds.hadley.nz" target="_blank">R for Data Science, 2nd ed. (Hadley Wickham)</a></td>
+            <td>Core R programming, tidyverse workflow, and data science fundamentals. Start here if you are new to R.</td>
+          </tr>
+          <tr>
+            <td><a href="https://clauswilke.com/dataviz/" target="_blank">Fundamentals of Data Visualization (Claus Wilke)</a></td>
+            <td>Principles of effective scientific data visualization. Recommended for everyone, regardless of experience level.</td>
+          </tr>
+          <tr>
+            <td><a href="https://bioconductor.org/books/release/OSCA/" target="_blank">Orchestrating Single-Cell Analysis with Bioconductor</a></td>
+            <td>Comprehensive reference for single-cell analysis in R, from QC through integration and visualization.</td>
+          </tr>
+          <tr>
+            <td><a href="https://www.singlecellcourse.org" target="_blank">Analysis of scRNA-seq Data (Cambridge)</a></td>
+            <td>Free course covering statistical foundations and practical workflows for single-cell transcriptomics.</td>
+          </tr>
+          <tr>
+            <td><a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/" target="_blank">ComplexHeatmap Complete Reference</a></td>
+            <td>Everything you need for building complex, publication-quality heatmaps in R.</td>
+          </tr>
+          <tr>
+            <td><a href="https://claude.ai" target="_blank">Claude (Anthropic)</a></td>
+            <td>AI assistant for coding help, literature questions, writing, and debugging. See <a href="06-ai-tools.html">Document 06</a> for how to use it effectively.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="call note">
+        <div class="call-title">Read broadly, not just the tools</div>
+        <p>The resources above cover methods. Equally important is reading the primary scientific literature on the biological and computational topics you encounter. When a method or dataset touches a field you do not know, go learn about it. Lab meeting is a good venue for sharing what you find.</p>
+      </div>
+    </div>
+
+
+    <!-- §6 WHAT A GOOD WEEK LOOKS LIKE -->
+    <div class="sec" id="goodweek">
+      <h2><span class="sn">§6</span> What a good week looks like</h2>
+      <p>There is no single template for a productive week in a computational lab. Projects vary, timelines vary, and the nature of the work shifts between phases of exploration, analysis, and writing. Certain habits, though, characterize work that compounds well over time.</p>
+      <ul>
+        <li><strong>Eight hours of focused work per day.</strong> Computational science rewards sustained concentration. Fragmented time produces fragmented work.</li>
+        <li><strong>Clear milestones and task completion.</strong> Know what you are trying to accomplish this week, and finish the things you start. Partial analyses are hard to hand off and easy to lose track of.</li>
+        <li><strong>Daily commits and pushes.</strong> Code that is not on GitHub cannot be reviewed, helped with, or built on. See <a href="03-git-workflow.html">Document 03</a>.</li>
+        <li><strong>Well-documented code.</strong> Write it as if someone else will need to run it next week. They might. See <a href="04-coding-standards.html">Document 04</a>.</li>
+        <li><strong>Reading.</strong> Set aside time each week to read, across both computational methods and biology. The two must develop together. Methods without biology produce technically competent but scientifically hollow analysis.</li>
+        <li><strong>Communication.</strong> Share what you are working on. Keep the PI and your colleagues updated. Ask questions when you are stuck.</li>
+        <li><strong>Availability.</strong> Be reachable on Slack during working hours and responsive to questions from colleagues who may need your help or input.</li>
+      </ul>
+
+      <div class="call info">
+        <div class="call-title">On knowing what your code is doing</div>
+        <p>Reliability in computational science means code that produces exactly what you say it produces, and where you have verified that this is the case. No one will check your work automatically. The responsibility of knowing precisely what your analysis is doing (why each step is there, whether the output is what you expect, and whether that expectation is the right choice) rests entirely with you.</p>
+        <p>This judgment develops over time. Early on, it means slowing down to check intermediate outputs, reading documentation carefully, and asking whether the numbers you are seeing make biological sense. Over time it becomes intuition, and developing it is one of the most important parts of becoming a skilled computational scientist.</p>
+      </div>
+    </div>
+
+
+    <!-- §7 BEING A GOOD COLLEAGUE -->
+    <div class="sec" id="colleague">
+      <h2><span class="sn">§7</span> Being a good colleague</h2>
+
+      <h3>Communicate your work</h3>
+      <p>The PI cannot help with what they cannot see. Communicating regularly about what you are working on, in your weekly 1:1 and at lab meetings, is how scientific problems get noticed before they become costly, and how the team learns from your work. Regular communication is how a computational team functions.</p>
+
+      <h3>Help others troubleshoot</h3>
+      <p>One of the most valuable things you can do for a colleague is point them to work that already exists on GitHub, to a vignette that addresses their question, or to a helper function that solves their problem. The lab's collective infrastructure is only useful if people know it exists and can access it. Be generous with what you know.</p>
+
+      <h3>Ask for help early</h3>
+      <p>Do not spend more time than necessary stuck on a problem alone. Use Claude, documentation, and search first. If that does not resolve it, ask on Slack or in your 1:1. Asking for help early is how science moves faster. The cost of staying stuck silently is always higher than the cost of asking.</p>
+
+      <h3>Finish what you start</h3>
+      <p>Take ownership of your projects. That means completing analyses you have begun, not starting things you cannot finish, and not taking over someone else's work without explicit agreement. It also means being generous: share your methods, your functions, and your findings openly within the lab and, when the time is right, with the wider scientific community.</p>
+    </div>
+
+
+    <!-- §8 THE FOUR STEPS OF DATA SCIENCE -->
+    <div class="sec" id="foursteps">
+      <h2><span class="sn">§8</span> The four steps of data science</h2>
+      <p>A useful frame for thinking about computational work is the following progression. Every analysis, regardless of scale or complexity, passes through these four stages.</p>
+
+      <div class="four-steps">
+        <div class="step-card">
+          <div class="step-num">Step 1</div>
+          <div class="step-name">Acquisition</div>
+          <div class="step-desc">Measurements. What data do we have, how was it collected, and what are its properties?</div>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step-card">
+          <div class="step-num">Step 2</div>
+          <div class="step-name">Exploration</div>
+          <div class="step-desc">Observations. What patterns, structures, and anomalies does the data contain?</div>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step-card">
+          <div class="step-num">Step 3</div>
+          <div class="step-name">Analysis</div>
+          <div class="step-desc">Statistics. What can be formally measured, tested, and concluded from these patterns?</div>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step-card">
+          <div class="step-num">Step 4</div>
+          <div class="step-name">Communication</div>
+          <div class="step-desc">Story. How do we explain what was found to others, clearly and honestly?</div>
+        </div>
+      </div>
+
+      <p>Iteration between steps is normal, and these stages are not always strictly sequential in practice. Losing track of which step you are in, and jumping to conclusions before adequately exploring the data, is one of the most common sources of error in computational biology. Return to this frame whenever a project feels muddled.</p>
+    </div>
+
+
+    <!-- §9 THINGS WORTH REMEMBERING -->
+    <div class="sec" id="maxims">
+      <h2><span class="sn">§9</span> Things worth remembering</h2>
+      <p>These are observations that tend to change how people approach the work. They are worth reading again at different stages of a project.</p>
+
+      <div class="maxims">
+        <div class="maxim">
+          <div class="maxim-quote">"Things take longer than you expect."</div>
+          <div class="maxim-body">Every analysis, every tool, every paper. Build this into how you plan. A project that would take two weeks in an ideal world tends to take four in practice. Knowing this going in prevents unnecessary stress and missed deadlines.</div>
+        </div>
+        <div class="maxim">
+          <div class="maxim-quote">"Organization is the difference between completion and failure."</div>
+          <div class="maxim-body">The file naming conventions, the Git workflow, the header blocks in scripts: these are what make it possible to find things, hand things off, and finish them. A disorganized project rarely gets completed. An organized one almost always does.</div>
+        </div>
+        <div class="maxim">
+          <div class="maxim-quote">"There is no substitute for knowing your data."</div>
+          <div class="maxim-body">Understanding the structure of your data — its dimensions, its distributions, its quirks and failure modes — is the foundation of everything. No statistical method compensates for analysis run on data that has not been adequately explored. Step 2 (Exploration) is never skippable.</div>
+        </div>
+        <div class="maxim">
+          <div class="maxim-quote">"Use GitHub."</div>
+          <div class="maxim-body">Code that is not committed and pushed does not exist for anyone but you. Pushing daily is the minimum viable practice for working in a team.</div>
+        </div>
+        <div class="maxim">
+          <div class="maxim-quote">"If you can visualize it, you can measure it."</div>
+          <div class="maxim-body">Visualization is a step in analysis. When you can represent a pattern visually, you have understood it well enough to formalize it. If you cannot visualize what you are trying to measure, the conceptual work is not yet complete.</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  const sections = document.querySelectorAll('.sec[id]');
+  const tocLinks = document.querySelectorAll('.toc-link');
+  function updateToc() {
+    let current = '';
+    sections.forEach(sec => { if (sec.getBoundingClientRect().top < 140) current = sec.id; });
+    tocLinks.forEach(link => { link.classList.toggle('here', link.getAttribute('href') === '#' + current); });
+  }
+  window.addEventListener('scroll', updateToc, { passive: true });
+  updateToc();
+</script>
+
+</body>
+</html>
