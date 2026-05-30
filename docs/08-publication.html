@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>08: Publication &amp; Archiving | Raredon Lab Manual</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sidebar-w: 256px; --header-h: 54px;
+      --bg: #FFFFFF; --sidebar-bg: #F6F5F1; --border: #E3E1DC;
+      --text-p: #1A1917; --text-s: #5C5A56; --text-t: #9C9A96;
+      --accent: #1D4ED8; --accent-lt: #EFF6FF; --accent-bd: #BFDBFE;
+      --code-bg: #F6F5F1; --code-bd: #D8D6D0;
+      --note-bg: #F0FDF4; --note-bd: #16A34A;
+      --warn-bg: #FFFBEB; --warn-bd: #D97706;
+      --rule-bg: #FFF1F2; --rule-bd: #E11D48;
+      --font: 'IBM Plex Sans', sans-serif;
+      --font-serif: 'IBM Plex Serif', serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+    html { scroll-behavior: smooth; font-size: 15px; }
+    body { font-family: var(--font); line-height: 1.75; color: var(--text-p); background: var(--bg); }
+
+    .site-header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-h); background: #141210; display: flex; align-items: center; padding: 0 24px; gap: 10px; z-index: 200; }
+    .hdr-lab { font-family: var(--font-serif); font-size: 15px; font-weight: 600; color: #fff; }
+    .hdr-sep { color: rgba(255,255,255,0.25); font-size: 20px; }
+    .hdr-manual { font-size: 13px; color: rgba(255,255,255,0.55); }
+    .hdr-spacer { flex: 1; }
+    .hdr-badge { font-family: var(--font-mono); font-size: 11px; color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); padding: 3px 9px; border-radius: 4px; }
+
+    .layout { display: flex; padding-top: var(--header-h); min-height: 100vh; }
+
+    .sidebar { position: fixed; top: var(--header-h); left: 0; width: var(--sidebar-w); height: calc(100vh - var(--header-h)); background: var(--sidebar-bg); border-right: 1px solid var(--border); overflow-y: auto; padding: 28px 0 48px; }
+    .sb-section { padding: 0 14px; margin-bottom: 28px; }
+    .sb-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-t); padding: 0 8px; margin-bottom: 6px; }
+    .nav-link { display: flex; align-items: baseline; gap: 6px; padding: 5px 8px; border-radius: 5px; font-size: 13px; color: var(--text-s); text-decoration: none; transition: background 0.12s, color 0.12s; line-height: 1.4; }
+    .nav-link:hover { background: rgba(0,0,0,0.05); color: var(--text-p); }
+    .nav-link.active { background: var(--accent-lt); color: var(--accent); font-weight: 500; }
+    .nav-link .n { font-family: var(--font-mono); font-size: 11px; color: var(--text-t); flex-shrink: 0; min-width: 22px; }
+    .nav-link.active .n { color: var(--accent); opacity: 0.7; }
+    .sb-div { border: none; border-top: 1px solid var(--border); margin: 10px 14px 16px; }
+    .toc-link { display: block; padding: 3px 8px; border-radius: 4px; font-size: 12.5px; color: var(--text-s); text-decoration: none; transition: color 0.12s; line-height: 1.5; }
+    .toc-link:hover { color: var(--accent); }
+    .toc-link.here { color: var(--accent); font-weight: 500; }
+
+    .content { margin-left: var(--sidebar-w); width: calc(100% - var(--sidebar-w)); max-width: calc(var(--sidebar-w) + 800px); padding: 52px 60px 100px; }
+
+    .eyebrow { font-family: var(--font-mono); font-size: 12px; color: var(--accent); font-weight: 500; letter-spacing: 0.05em; margin-bottom: 10px; }
+    .doc-title { font-family: var(--font-serif); font-size: 36px; font-weight: 600; line-height: 1.18; color: var(--text-p); margin-bottom: 14px; }
+    .doc-sub { font-size: 17px; color: var(--text-s); line-height: 1.65; max-width: 580px; padding-bottom: 36px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+
+    .sec { margin-bottom: 56px; scroll-margin-top: calc(var(--header-h) + 20px); }
+    h2 { font-family: var(--font-serif); font-size: 23px; font-weight: 600; color: var(--text-p); display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+    .sn { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--text-t); background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; flex-shrink: 0; }
+    h3 { font-size: 15px; font-weight: 600; color: var(--text-p); margin: 28px 0 10px; }
+    p { margin-bottom: 14px; }
+    p:last-child { margin-bottom: 0; }
+    a { color: var(--accent); }
+    ul, ol { margin: 12px 0 14px 20px; }
+    li { margin-bottom: 7px; line-height: 1.65; }
+
+    .call { border-radius: 6px; padding: 14px 18px; border-left: 3px solid; margin: 22px 0; }
+    .call-title { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 6px; }
+    .call p { font-size: 14px; line-height: 1.65; margin: 0; }
+    .call p + p { margin-top: 8px; }
+    .call.note { background: var(--note-bg); border-color: var(--note-bd); }
+    .call.note .call-title { color: #15803D; }
+    .call.warn { background: var(--warn-bg); border-color: var(--warn-bd); }
+    .call.warn .call-title { color: #B45309; }
+    .call.rule { background: var(--rule-bg); border-color: var(--rule-bd); }
+    .call.rule .call-title { color: #BE123C; }
+    .call.info { background: var(--accent-lt); border-color: var(--accent-bd); }
+    .call.info .call-title { color: var(--accent); }
+
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+    th { background: var(--sidebar-bg); font-weight: 600; text-align: left; padding: 9px 14px; border: 1px solid var(--border); font-size: 12px; }
+    td { padding: 9px 14px; border: 1px solid var(--border); vertical-align: top; line-height: 1.6; }
+    tr:nth-child(even) td { background: #FAFAF8; }
+
+    /* Pipeline flow */
+    .pipeline {
+      display: flex; align-items: center; gap: 0;
+      margin: 20px 0; flex-wrap: wrap;
+    }
+    .pipe-step {
+      background: var(--sidebar-bg); border: 1px solid var(--border);
+      border-radius: 6px; padding: 10px 14px; font-size: 13px;
+      line-height: 1.4;
+    }
+    .pipe-step .ps-label {
+      font-family: var(--font-mono); font-size: 10px;
+      color: var(--text-t); text-transform: uppercase;
+      letter-spacing: 0.07em; margin-bottom: 3px;
+    }
+    .pipe-step .ps-name { font-weight: 600; color: var(--text-p); }
+    .pipe-arrow {
+      font-size: 16px; color: var(--text-t);
+      padding: 0 10px; flex-shrink: 0;
+    }
+
+    /* Submission steps */
+    .sub-steps { list-style: none; margin: 20px 0; padding: 0; }
+    .sub-steps li {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 12px 0; border-bottom: 1px solid var(--border);
+    }
+    .sub-steps li:last-child { border-bottom: none; }
+    .step-n {
+      flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+      background: var(--sidebar-bg); border: 1px solid var(--border);
+      color: var(--text-t); font-family: var(--font-mono);
+      font-size: 12px; font-weight: 500;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 2px;
+    }
+    .step-body { flex: 1; font-size: 14px; line-height: 1.6; color: var(--text-p); }
+    .step-body strong { font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="hdr-lab">Raredon Lab</span>
+  <span class="hdr-sep">·</span>
+  <span class="hdr-manual">Computational Lab Manual</span>
+  <div class="hdr-spacer"></div>
+  <span class="hdr-badge">Document 08 of 08</span>
+</header>
+
+<div class="layout">
+  <nav class="sidebar" aria-label="Manual navigation">
+    <div class="sb-section">
+      <div class="sb-label">Documents</div>
+      <a href="index.html" class="nav-link"><span class="n">00</span> Overview &amp; index</a>
+      <a href="01-onboarding.html" class="nav-link"><span class="n">01</span> Onboarding</a>
+      <a href="02-computing-environment.html" class="nav-link"><span class="n">02</span> Computing environment</a>
+      <a href="03-git-workflow.html" class="nav-link"><span class="n">03</span> Git &amp; GitHub workflow</a>
+      <a href="04-coding-standards.html" class="nav-link"><span class="n">04</span> Coding standards</a>
+      <a href="05-data-management.html" class="nav-link"><span class="n">05</span> Data management</a>
+      <a href="06-ai-tools.html" class="nav-link"><span class="n">06</span> AI tools &amp; Claude</a>
+      <a href="07-ethics-teamwork.html" class="nav-link"><span class="n">07</span> Ethics &amp; teamwork</a>
+      <a href="08-publication.html" class="nav-link active" aria-current="page"><span class="n">08</span> Publication &amp; archiving</a>
+    </div>
+    <hr class="sb-div">
+    <div class="sb-section">
+      <div class="sb-label">Appendices</div>
+      <a href="appendix-a-exit-protocol.html" class="nav-link"><span class="n">A</span> Lab exit protocol</a>
+    </div>
+    <hr class="sb-div">
+    <div class="sb-section">
+      <div class="sb-label">On this page</div>
+      <a href="#figures" class="toc-link">Figure standards</a>
+      <a href="#integrity" class="toc-link">Image integrity</a>
+      <a href="#code" class="toc-link">Code release</a>
+      <a href="#data" class="toc-link">Data deposition</a>
+      <a href="#manuscript" class="toc-link">The manuscript process</a>
+      <a href="#archiving" class="toc-link">Archiving at publication</a>
+    </div>
+  </nav>
+
+  <main class="content">
+    <div class="eyebrow">Document 08</div>
+    <h1 class="doc-title">Publication &amp; Archiving</h1>
+    <p class="doc-sub">Figure standards, code release, data deposition, the manuscript process, and what it means to close a project properly.</p>
+
+
+    <!-- §1 FIGURE STANDARDS -->
+    <div class="sec" id="figures">
+      <h2><span class="sn">§1</span> Figure standards</h2>
+      <p>Figures are the primary medium through which scientific findings are communicated to readers. The standards below apply to all figures in manuscripts, preprints, posters, and presentations produced by the lab.</p>
+
+      <h3>Technical specifications</h3>
+      <table>
+        <thead><tr><th>Parameter</th><th>Standard</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>File format</td>
+            <td>300 dpi PNG for export. Illustrator source files (.ai) preserved alongside all exports.</td>
+          </tr>
+          <tr>
+            <td>Assembly software</td>
+            <td>Adobe Illustrator is the lab standard. Open-source vector-based alternatives (e.g., Inkscape) are acceptable provided they support <strong>file linking</strong> rather than embedding. File linking is the critical feature: it allows source panels to be updated without rebuilding the entire figure.</td>
+          </tr>
+          <tr>
+            <td>File linking</td>
+            <td>All panels placed into an Illustrator file must be linked, not embedded.</td>
+          </tr>
+          <tr>
+            <td>Fonts</td>
+            <td>Sans-serif only: Arial or Helvetica. No readable text should be smaller than 6 pt in the final exported figure.</td>
+          </tr>
+          <tr>
+            <td>Color</td>
+            <td>Colors must be distinguishable from one another. Any color encoding that requires interpretation must include a legend.</td>
+          </tr>
+          <tr>
+            <td>Axes</td>
+            <td>All axes must be labeled. Units must be included wherever applicable.</td>
+          </tr>
+          <tr>
+            <td>Quality check</td>
+            <td>Every exported PNG must be inspected at high zoom for pixelation or rendering artifacts before use. Correct and re-export if any are found.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="call note">
+        <div class="call-title">Figure craft takes time</div>
+        <p>Building a publication-quality figure set is a multi-month process. Start early, get feedback from colleagues and from the PI throughout, and expect to revise significantly. Most things that seem clear to the person who ran the analysis are not clear to a reader seeing the figure for the first time.</p>
+      </div>
+    </div>
+
+
+    <!-- §2 IMAGE INTEGRITY -->
+    <div class="sec" id="integrity">
+      <h2><span class="sn">§2</span> Image integrity</h2>
+      <p>How data moves from its source to a figure panel is a scientific and ethical question. The following pipelines define what is acceptable.</p>
+
+      <h3>Computational outputs</h3>
+      <div class="pipeline">
+        <div class="pipe-step">
+          <div class="ps-label">Analysis</div>
+          <div class="ps-name">R script</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">
+          <div class="ps-label">Export</div>
+          <div class="ps-name">Save to disk</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">
+          <div class="ps-label">Assembly</div>
+          <div class="ps-name">Link in Illustrator</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">
+          <div class="ps-label">Output</div>
+          <div class="ps-name">Export PNG</div>
+        </div>
+      </div>
+      <p>Computational outputs should flow directly from R to disk to Illustrator. The figure should represent exactly what the analysis produced.</p>
+
+      <h3>Microscopy and imaging outputs</h3>
+      <div class="pipeline">
+        <div class="pipe-step">
+          <div class="ps-label">Acquisition</div>
+          <div class="ps-name">Instrument</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">
+          <div class="ps-label">Archive</div>
+          <div class="ps-name">Raw capture</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">
+          <div class="ps-label">Processing</div>
+          <div class="ps-name">Crop / adjust</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">
+          <div class="ps-label">Assembly</div>
+          <div class="ps-name">Link in Illustrator</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">
+          <div class="ps-label">Output</div>
+          <div class="ps-name">Export PNG</div>
+        </div>
+      </div>
+      <p>Microscopy and Xenium images may be cropped or minimally adjusted (brightness, contrast) between raw capture and Illustrator, provided those adjustments are applied uniformly and are disclosed in the methods. The raw capture must be preserved on the lab server.</p>
+
+      <div class="call rule">
+        <div class="call-title">No misleading modifications</div>
+        <p>No modification may be made to any figure panel that misrepresents what was measured or observed. This includes selectively cropping to hide unfavorable data, adjusting contrast to obscure or emphasize features differentially, or any other alteration that would cause a reader to draw a different conclusion than the underlying data supports. This constitutes research misconduct. When in doubt about whether an adjustment is appropriate, ask before making it.</p>
+      </div>
+    </div>
+
+
+    <!-- §3 CODE RELEASE -->
+    <div class="sec" id="code">
+      <h2><span class="sn">§3</span> Code release</h2>
+      <p>Every publication from this lab should have an associated GitHub repository containing the code used to produce it. In most cases this will be an existing RaredonLab repository made public at the time of submission or publication. When a paper draws from multiple repositories, the README should clearly identify all of them.</p>
+
+      <h3>What should be in the released repository</h3>
+      <p>The minimum is an organized code deposit: scripts that run in a clear sequence, a README explaining what they do and in what order. Strive for better than the minimum. The ideal release includes:</p>
+      <ul>
+        <li>A clear README with a project overview, data access instructions, and a walkthrough of the analysis sequence</li>
+        <li>Well-annotated scripts following the naming conventions in <a href="04-coding-standards.html">Document 04</a></li>
+        <li>Knit HTML vignettes in <code>docs/</code> that demonstrate key analytical steps</li>
+        <li>A formal R package, if the work produced generalizable tools</li>
+      </ul>
+      <p>The purpose of releasing code is to help others learn from and build on the lab's work. A repository that achieves this is a contribution to the field beyond the paper itself.</p>
+
+      <h3>Before making a repository public</h3>
+      <p>Review the repository for any proprietary material before changing its visibility to public. This is rare, but it must be checked. Confirm with the PI that the repository is ready for release before making it public.</p>
+    </div>
+
+
+    <!-- §4 DATA DEPOSITION -->
+    <div class="sec" id="data">
+      <h2><span class="sn">§4</span> Data deposition</h2>
+      <p>Both raw and processed data should be deposited at the time of publication. The lab uses two repositories:</p>
+
+      <table>
+        <thead><tr><th>Repository</th><th>What goes there</th><th>Link</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>GEO</strong> (NCBI Gene Expression Omnibus)</td>
+            <td>Raw and processed sequencing data: scRNAseq, spatial transcriptomics, bulk RNA-seq</td>
+            <td><a href="https://www.ncbi.nlm.nih.gov/geo/" target="_blank">ncbi.nlm.nih.gov/geo</a></td>
+          </tr>
+          <tr>
+            <td><strong>Figshare</strong></td>
+            <td>Processed data objects, supplementary files, and any data that does not fit GEO requirements</td>
+            <td><a href="https://figshare.com" target="_blank">figshare.com</a></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Metadata and documentation</h3>
+      <p>Deposited data should be clean, clearly labeled, and comprehensive. The goal is to make it easy for other labs to find, understand, and use what you have generated. Include metadata that fully describes the samples, conditions, processing steps, and any relevant experimental parameters. Vague or incomplete metadata devalues a dataset significantly.</p>
+
+      <div class="call rule">
+        <div class="call-title">Check with the PI before depositing</div>
+        <p>Confirm with the PI before releasing any data or metadata publicly. Timing, embargo periods, and scope of release all require PI involvement.</p>
+      </div>
+    </div>
+
+
+    <!-- §5 THE MANUSCRIPT PROCESS -->
+    <div class="sec" id="manuscript">
+      <h2><span class="sn">§5</span> The manuscript process</h2>
+      <p>The following sequence applies to every manuscript submitted from this lab. First authors are responsible for managing this process and keeping it moving. Additional detail on first author responsibilities is in the General Lab Manual (in development).</p>
+
+      <ul class="sub-steps">
+        <li>
+          <span class="step-n">1</span>
+          <div class="step-body"><strong>First author writes and assembles.</strong> The first author writes the manuscript, assembles all figures, and prepares all supplementary materials to a complete, submission-ready state.</div>
+        </li>
+        <li>
+          <span class="step-n">2</span>
+          <div class="step-body"><strong>First author sends complete draft to PI.</strong> The PI reviews and returns written edits. Partial drafts may also be sent, as the first author deems appropriate, if interim feedback would be useful.</div>
+        </li>
+        <li>
+          <span class="step-n">3</span>
+          <div class="step-body"><strong>First author addresses PI edits, then sends to the full authorship team.</strong> Co-authors may return comments. The first author addresses all of them.</div>
+        </li>
+        <li>
+          <span class="step-n">4</span>
+          <div class="step-body"><strong>First author sends the revised draft to the PI for final approval.</strong> Once approval is given, the first author organizes and proofreads all submission materials.</div>
+        </li>
+        <li>
+          <span class="step-n">5</span>
+          <div class="step-body"><strong>First author schedules a submission meeting with the PI.</strong> The manuscript is submitted together, in person, in a one-hour meeting. This is standard practice for every submission from this lab.</div>
+        </li>
+        <li>
+          <span class="step-n">6</span>
+          <div class="step-body"><strong>For each round of peer review:</strong> the first author addresses all reviewer comments and requested revisions, returns the finished revised manuscript to the PI, and schedules a re-submission meeting as before. Every revision follows the same process as the original submission.</div>
+        </li>
+      </ul>
+
+      <div class="call rule">
+        <div class="call-title">The PI is involved in all editor communication</div>
+        <p>The PI is the corresponding author on all papers by default. In exceptional cases, the first author may be elevated to co-corresponding author by the PI's decision. All communication with journal editors, at every stage, must involve the PI.</p>
+      </div>
+
+      <h3>Preprints</h3>
+      <p>Whether and when to post a preprint is decided on a case-by-case basis. Both the benefits (rapid dissemination, establishing priority) and the costs (reduced novelty for high-impact journals, public exposure before peer review) vary by project and target journal. Discuss the preprint strategy with the PI early in the manuscript process.</p>
+    </div>
+
+
+    <!-- §6 ARCHIVING AT PUBLICATION -->
+    <div class="sec" id="archiving">
+      <h2><span class="sn">§6</span> Archiving at publication</h2>
+      <p>A project is considered complete when the paper has been peer-reviewed and published. At that point, a final round of organization should confirm that the following are in place.</p>
+
+      <h3>On the Raredon Lab server</h3>
+      <ul>
+        <li>All data, processed objects, figures, and submission materials are present and organized</li>
+        <li>A README file in the project directory identifies all materials by name, describes the directory structure, and points to the corresponding GitHub repository and public data deposits</li>
+        <li>Intermediate files that are no longer needed have been cleaned up (see <a href="05-data-management.html">Document 05 §4</a> on post-publication housekeeping)</li>
+      </ul>
+
+      <h3>On GitHub</h3>
+      <ul>
+        <li>The associated repository is public (or has been confirmed with the PI to remain private)</li>
+        <li>The README links to the published paper, the GEO accession, and the Figshare deposit</li>
+        <li>All code runs cleanly from a fresh environment</li>
+      </ul>
+
+      <h3>Public data deposits</h3>
+      <ul>
+        <li>GEO and Figshare accession numbers are recorded in the paper and in the server README</li>
+        <li>Any embargo periods have expired or are tracked for future release</li>
+      </ul>
+
+      <div class="call info">
+        <div class="call-title">A complete archive serves the field</div>
+        <p>A well-archived project allows other scientists to reproduce your findings, build on your methods, and trust your results. It is also the record that future lab members will rely on to understand the lab's prior work. The effort put into archiving a project is a contribution that outlasts the paper itself.</p>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  const sections = document.querySelectorAll('.sec[id]');
+  const tocLinks = document.querySelectorAll('.toc-link');
+  function updateToc() {
+    let current = '';
+    sections.forEach(sec => { if (sec.getBoundingClientRect().top < 140) current = sec.id; });
+    tocLinks.forEach(link => { link.classList.toggle('here', link.getAttribute('href') === '#' + current); });
+  }
+  window.addEventListener('scroll', updateToc, { passive: true });
+  updateToc();
+</script>
+
+</body>
+</html>
